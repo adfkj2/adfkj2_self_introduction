@@ -1,35 +1,35 @@
 // @ts-check
-
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
-import { defineConfig, fontProviders } from 'astro/config';
-
-// https://astro.build/config
+import { defineConfig } from 'astro/config';
+import { loadEnv } from 'vite';
+const env = loadEnv(process.env.NODE_ENV || 'production', process.cwd(), 'PUBLIC_');
+const site = process.env.PUBLIC_SITE_URL || env.PUBLIC_SITE_URL || undefined;
+if (site) {
+  const url = new URL(site);
+  if (!['https:', 'http:'].includes(url.protocol) || url.pathname !== '/')
+    throw new Error('PUBLIC_SITE_URL must be an http(s) origin without a subpath.');
+}
 export default defineConfig({
-	site: 'https://example.com',
-	integrations: [mdx(), sitemap()],
-	fonts: [
-		{
-			provider: fontProviders.local(),
-			name: 'Atkinson',
-			cssVariable: '--font-atkinson',
-			fallbacks: ['sans-serif'],
-			options: {
-				variants: [
-					{
-						src: ['./src/assets/fonts/atkinson-regular.woff'],
-						weight: 400,
-						style: 'normal',
-						display: 'swap',
-					},
-					{
-						src: ['./src/assets/fonts/atkinson-bold.woff'],
-						weight: 700,
-						style: 'normal',
-						display: 'swap',
-					},
-				],
-			},
-		},
-	],
+  site,
+  output: 'static',
+  trailingSlash: 'always',
+  integrations: [
+    mdx(),
+    ...(site
+      ? [
+          sitemap({
+            filter: (url) =>
+              !url.includes('/examples/') && !url.includes('/404') && !url.includes('/blog/'),
+          }),
+        ]
+      : []),
+  ],
+  markdown: {
+    shikiConfig: {
+      themes: { light: 'github-light', dark: 'github-dark' },
+      defaultColor: false,
+      wrap: false,
+    },
+  },
 });

@@ -1,84 +1,192 @@
 ---
+import type { MarkdownHeading } from 'astro';
 import { Image } from 'astro:assets';
-import type { CollectionEntry } from 'astro:content';
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
+import BaseLayout from './BaseLayout.astro';
 import FormattedDate from '../components/FormattedDate.astro';
-import Header from '../components/Header.astro';
-
-type Props = CollectionEntry<'blog'>['data'];
-
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+import Icon from '../components/Icon.astro';
+import { profile, topics } from '../data/site';
+import { type Post, readingTime, postUrl } from '../utils/posts';
+import '../styles/article.css';
+interface Props {
+  post: Post;
+  headings: MarkdownHeading[];
+  previous?: Post;
+  next?: Post;
+}
+const { post, headings, previous, next } = Astro.props;
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  category,
+  example,
+  tags,
+  heroImage,
+  heroAlt,
+  heroCaption,
+} = post.data;
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
-<html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
-	</head>
-
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{updatedDate && (
-								<div class="last-updated-on">
-									Last updated on <FormattedDate date={updatedDate} />
-								</div>
-							)}
-						</div>
-						<h1>{title}</h1>
-						<hr />
-					</div>
-					<slot />
-				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
-</html>
+<BaseLayout
+  title={`${title} — ${profile.handle}`}
+  description={description}
+  noindex={example}
+  article
+>
+  <div class="container reader-container">
+    <nav class="breadcrumb" aria-label="面包屑">
+      <a href="/writing/">Writing</a>
+      <span>/</span>
+      <span>{example ? '排版示例' : category}</span>
+    </nav>
+    {example && (
+      <aside class="notice example-notice">
+        <strong>阅读排版示例</strong> · 本文用于演示网站的 Markdown
+        阅读体验，非个人已发表的技术成果，不进入正式文章列表或 RSS。
+      </aside>
+    )}
+    <header class="article-header">
+      <div class="eyebrow">{example ? 'EXAMPLE / READING EXPERIENCE' : category.toUpperCase()}</div>
+      <h1>{title}</h1>
+      <p class="article-description">{description}</p>
+      <div class="article-meta">
+        <span>
+          {example ? '示例日期' : '发布于'} <FormattedDate date={pubDate} />
+        </span>
+        <span>约 {readingTime(post.body)} 分钟阅读</span>
+        {updatedDate && (
+          <span>
+            更新于 <FormattedDate date={updatedDate} />
+          </span>
+        )}
+      </div>
+      <div class="tags">
+        {tags.map((tag) => (
+          <a class="tag" href={`/writing/tags/${tag}/`}>
+            {topics.find((t) => t.slug === tag)?.label || tag}
+          </a>
+        ))}
+      </div>
+    </header>
+    {heroImage && (
+      <figure class="article-hero">
+        <Image src={heroImage} alt={heroAlt!} width={1184} />
+        {heroCaption && <figcaption>{heroCaption}</figcaption>}
+      </figure>
+    )}
+    <div class="reader-grid">
+      <article class="prose" id="article-content">
+        <slot />
+        <div class="article-end">
+          <span class="eyebrow">END OF NOTE</span>
+          <p>
+            {example
+              ? '这是一份排版示例。真实文章将在完成后发布。'
+              : '感谢阅读。欢迎回到项目源码，继续核对与讨论。'}
+          </p>
+        </div>
+      </article>
+      {toc.length > 0 && (
+        <aside class="article-toc">
+          <div class="eyebrow">ON THIS PAGE</div>
+          <nav aria-label="文章目录">
+            {toc.map((h) => (
+              <a href={`#${h.slug}`} class:list={[{ 'toc-sub': h.depth === 3 }]}>
+                {h.text}
+              </a>
+            ))}
+          </nav>
+        </aside>
+      )}
+    </div>
+    <nav class="article-pagination" aria-label="文章翻页">
+      {previous ? (
+        <a href={postUrl(previous)}>
+          <span>← 上一篇</span>
+          <strong>{previous.data.title}</strong>
+        </a>
+      ) : (
+        <a href="/writing/">
+          <span>← 返回文章列表</span>
+          <strong>继续阅读与探索</strong>
+        </a>
+      )}
+      {next ? (
+        <a href={postUrl(next)}>
+          <span>下一篇 →</span>
+          <strong>{next.data.title}</strong>
+        </a>
+      ) : (
+        <a href="/projects/">
+          <span>接下来 →</span>
+          <strong>
+            从文章回到项目
+            <Icon name="arrow" size={17} />
+          </strong>
+        </a>
+      )}
+    </nav>
+  </div>
+</BaseLayout>
+<script>
+  document
+    .querySelectorAll('.prose pre, .prose code')
+    .forEach((element) => element.setAttribute('translate', 'no'));
+  const announce = document.createElement('div');
+  announce.setAttribute('role', 'status');
+  announce.className = 'sr-only';
+  document.body.append(announce);
+  document.querySelectorAll<HTMLElement>('.prose pre').forEach((pre) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'code-block';
+    pre.before(wrapper);
+    wrapper.append(pre);
+    pre.setAttribute('tabindex', '0');
+    const button = document.createElement('button');
+    button.className = 'copy-code';
+    button.textContent = '复制';
+    button.setAttribute('aria-label', '复制代码');
+    wrapper.append(button);
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(
+          pre.querySelector('code')?.textContent || pre.textContent || '',
+        );
+        button.textContent = '已复制';
+        announce.textContent = '代码已复制到剪贴板';
+      } catch {
+        button.textContent = '请手动复制';
+        announce.textContent = '无法访问剪贴板，请选择代码手动复制';
+      }
+      window.setTimeout(() => (button.textContent = '复制'), 2000);
+    });
+  });
+  document.querySelectorAll<HTMLTableElement>('.prose table').forEach((table) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'table-scroll';
+    wrapper.tabIndex = 0;
+    wrapper.setAttribute('role', 'region');
+    wrapper.setAttribute('aria-label', '表格，可横向滚动');
+    table.before(wrapper);
+    wrapper.append(table);
+  });
+  const tocLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('.article-toc a'));
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting)
+            tocLinks.forEach((link) => {
+              if (decodeURIComponent(link.hash.slice(1)) === entry.target.id)
+                link.setAttribute('aria-current', 'location');
+              else link.removeAttribute('aria-current');
+            });
+        });
+      },
+      { rootMargin: '-100px 0px -60% 0px' },
+    );
+    document.querySelectorAll('.prose h2,.prose h3').forEach((h) => observer.observe(h));
+  }
+</script>

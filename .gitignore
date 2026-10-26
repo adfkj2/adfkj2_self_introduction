@@ -1,5 +1,8 @@
 # build output
 dist/
+.cache/
+.qa/
+personal-site.tar.gz
 # generated types
 .astro/
 

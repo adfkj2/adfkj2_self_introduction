@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<BaseLayout title="404 — 未找到页面" noindex>
+  <div class="container page-bottom">
+    <div class="page-hero">
+      <div class="eyebrow">404 / ROUTE NOT FOUND</div>
+      <h1>
+        A small detour<span class="accent">.</span>
+      </h1>
+      <p>
+        这条路径还没有内容，或页面已经移动。
+        <br />
+        回到首页，继续探索系统与想法。
+      </p>
+    </div>
+    <a class="button button-primary" href="/">
+      回到首页
+      <Icon name="arrow" size={18} />
+    </a>
+    <a class="text-link" href="/projects/" style="margin-left:24px">
+      浏览项目
+      <Icon name="arrow" size={17} />
+    </a>
+  </div>
+</BaseLayout>

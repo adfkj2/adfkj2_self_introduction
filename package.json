@@ -9,7 +9,14 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "astro check",
+    "dev:status": "astro dev status",
+    "dev:stop": "astro dev stop",
+    "dev:logs": "astro dev logs",
+    "verify": "node scripts/verify-build.mjs",
+    "format": "prettier --write src scripts astro.config.mjs README.md docs/DEPLOYMENT.md",
+    "verify:content": "node scripts/verify-content-workflow.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.1",
@@ -17,5 +24,11 @@
     "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.4.2",
     "sharp": "^0.35.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.1",
+    "typescript": "^6.0.3"
   }
 }

@@ -1,63 +1,134 @@
 ---
-import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
-import Layout from '../layouts/BlogPost.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { profile } from '../data/site';
 ---
 
-<Layout
-	title="About Me"
-	description="Lorem ipsum dolor sit amet"
-	pubDate={new Date('August 08 2021')}
-	heroImage={AboutHeroImage}
+<BaseLayout
+  title={`About — ${profile.handle}`}
+  description="四川大学计算机科学与技术。关注 Java 后端、AI Agent 与长期记忆系统，以可核验的工程实践持续学习。"
 >
-	<p>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-		labore et dolore magna aliqua. Vitae ultricies leo integer malesuada nunc vel risus commodo
-		viverra. Adipiscing enim eu turpis egestas pretium. Euismod elementum nisi quis eleifend quam
-		adipiscing. In hac habitasse platea dictumst vestibulum. Sagittis purus sit amet volutpat. Netus
-		et malesuada fames ac turpis egestas. Eget magna fermentum iaculis eu non diam phasellus
-		vestibulum lorem. Varius sit amet mattis vulputate enim. Habitasse platea dictumst quisque
-		sagittis. Integer quis auctor elit sed vulputate mi. Dictumst quisque sagittis purus sit amet.
-	</p>
-
-	<p>
-		Morbi tristique senectus et netus. Id semper risus in hendrerit gravida rutrum quisque non
-		tellus. Habitasse platea dictumst quisque sagittis purus sit amet. Tellus molestie nunc non
-		blandit massa. Cursus vitae congue mauris rhoncus. Accumsan tortor posuere ac ut. Fringilla urna
-		porttitor rhoncus dolor. Elit ullamcorper dignissim cras tincidunt lobortis. In cursus turpis
-		massa tincidunt dui ut ornare lectus. Integer feugiat scelerisque varius morbi enim nunc.
-		Bibendum neque egestas congue quisque egestas diam. Cras ornare arcu dui vivamus arcu felis
-		bibendum. Dignissim suspendisse in est ante in nibh mauris. Sed tempus urna et pharetra pharetra
-		massa massa ultricies mi.
-	</p>
-
-	<p>
-		Mollis nunc sed id semper risus in. Convallis a cras semper auctor neque. Diam sit amet nisl
-		suscipit. Lacus viverra vitae congue eu consequat ac felis donec. Egestas integer eget aliquet
-		nibh praesent tristique magna sit amet. Eget magna fermentum iaculis eu non diam. In vitae
-		turpis massa sed elementum. Tristique et egestas quis ipsum suspendisse ultrices. Eget lorem
-		dolor sed viverra ipsum. Vel turpis nunc eget lorem dolor sed viverra. Posuere ac ut consequat
-		semper viverra nam. Laoreet suspendisse interdum consectetur libero id faucibus. Diam phasellus
-		vestibulum lorem sed risus ultricies tristique. Rhoncus dolor purus non enim praesent elementum
-		facilisis. Ultrices tincidunt arcu non sodales neque. Tempus egestas sed sed risus pretium quam
-		vulputate. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Fringilla
-		urna porttitor rhoncus dolor purus non. Amet dictum sit amet justo donec enim.
-	</p>
-
-	<p>
-		Mattis ullamcorper velit sed ullamcorper morbi tincidunt. Tortor posuere ac ut consequat semper
-		viverra. Tellus mauris a diam maecenas sed enim ut sem viverra. Venenatis urna cursus eget nunc
-		scelerisque viverra mauris in. Arcu ac tortor dignissim convallis aenean et tortor at. Curabitur
-		gravida arcu ac tortor dignissim convallis aenean et tortor. Egestas tellus rutrum tellus
-		pellentesque eu. Fusce ut placerat orci nulla pellentesque dignissim enim sit amet. Ut enim
-		blandit volutpat maecenas volutpat blandit aliquam etiam. Id donec ultrices tincidunt arcu. Id
-		cursus metus aliquam eleifend mi.
-	</p>
-
-	<p>
-		Tempus quam pellentesque nec nam aliquam sem. Risus at ultrices mi tempus imperdiet. Id porta
-		nibh venenatis cras sed felis eget velit. Ipsum a arcu cursus vitae. Facilisis magna etiam
-		tempor orci eu lobortis elementum. Tincidunt dui ut ornare lectus sit. Quisque non tellus orci
-		ac. Blandit libero volutpat sed cras. Nec tincidunt praesent semper feugiat nibh sed pulvinar
-		proin gravida. Egestas integer eget aliquet nibh praesent tristique magna.
-	</p>
-</Layout>
+  <div class="container">
+    <header class="page-hero">
+      <h1>
+        保持好奇，
+        <br />
+        也保持严谨。
+      </h1>
+      <p>
+        代码是理解世界的一种方式。
+        <br />
+        而把事情做扎实，是我希望一直保留的习惯。
+      </p>
+    </header>
+    <div class="about-grid page-bottom">
+      <div class="about-intro">
+        <h2>
+          你好，我是 {profile.name || profile.handle}
+          <span class="accent">。</span>
+          <br />
+          在确定性与可能性之间，认真构建。
+        </h2>
+        <p>
+          我在{profile.university}学习{profile.major}。目前的技术方向是 Java 后端与 AI
+          Agent：一端是业务规则、数据与接口的确定性，另一端是记忆、检索与生成带来的新可能。
+        </p>
+        <p>
+          我喜欢沿着一个真实问题向下追问：数据怎样保持一致？记忆什么时候应该更新？模型没有足够证据时，系统应该怎样回应？个人项目是把这些问题变成可运行实现、再反过来检验想法的地方。
+        </p>
+        <p>
+          这个网站用来记录持续进行的工程实践，也用于展示实习与校招相关的个人项目。项目介绍尽量保留设计取舍、验证条件和没有解决的问题。
+        </p>
+        <div class="principles">
+          <div class="eyebrow">A FEW THINGS I BELIEVE IN</div>
+          {[
+            {
+              title: '先理解问题，再增加复杂度。',
+              text: '清晰的业务边界和简单可维护的实现，是技术选型的起点。工具应该回应问题。',
+            },
+            {
+              title: '让结论有证据，让失败可复现。',
+              text: '测试条件、原始记录与失败边界，比孤立的性能数字更有意义。',
+            },
+            {
+              title: '保持好奇，也尊重边界。',
+              text: '对 AI 的可能性保持开放，同时认真对待可靠性、隐私和系统实际能做到的事。',
+            },
+          ].map((p, i) => (
+            <div class="principle">
+              <span>0{i + 1}</span>
+              <div>
+                <h3>{p.title}</h3>
+                <p>{p.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <section class="resume-panel" id="resume">
+          <Icon name="file" size={32} />
+          <div>
+            <h3>Resume / 简历</h3>
+            {profile.resume ? (
+              <a class="text-link" href={profile.resume} target="_blank" rel="noopener noreferrer">
+                查看简历 PDF
+                <Icon name="external" size={15} />
+              </a>
+            ) : (
+              <>
+                <p>简历 PDF 尚未公开。欢迎先查看项目的源码、架构与工程记录。</p>
+                <span class="resume-label">NOT PUBLISHED YET</span>
+                <br />
+                <a class="text-link" href="/projects/">
+                  查看项目经历
+                  <Icon name="arrow" size={16} />
+                </a>
+              </>
+            )}
+          </div>
+        </section>
+      </div>
+      <aside class="profile-panel">
+        <div class="about-monogram" aria-hidden="true">
+          a/
+        </div>
+        <h2>{profile.name || profile.handle}</h2>
+        <p class="role">
+          Java Backend Engineer
+          <br />& AI Agent Builder
+        </p>
+        <ul class="profile-data">
+          <li>
+            <span>Education</span>
+            {profile.university}
+          </li>
+          <li>
+            <span>Major</span>
+            {profile.major}
+          </li>
+          <li>
+            <span>Focus</span>Backend + AI Agent
+          </li>
+          {profile.email && (
+            <li>
+              <span>Email</span>
+              <a href={`mailto:${profile.email}`}>{profile.email}</a>
+            </li>
+          )}
+          {profile.phone && (
+            <li>
+              <span>Phone</span>
+              <a href={`tel:${profile.phone}`}>{profile.phone}</a>
+            </li>
+          )}
+          <li>
+            <span>GitHub</span>
+            <a class="accent" href={profile.github} target="_blank" rel="noopener noreferrer">
+              @{profile.handle}
+              <Icon name="external" size={13} />
+            </a>
+          </li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

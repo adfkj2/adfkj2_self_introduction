@@ -1,0 +1,162 @@
+---
+const stages = [
+  { id: 'formation', label: '形成', description: '把交互中的事实与来源，组织为可回看的记忆。' },
+  { id: 'evolution', label: '演化', description: '保留版本与更新边界，让记忆能够被修订。' },
+  { id: 'retrieval', label: '检索', description: '根据当前问题检索相关记忆，组织有限的上下文。' },
+];
+---
+
+<figure class="memory-atlas" data-memory-atlas data-stage="formation">
+  <figcaption class="atlas-caption">
+    <span class="atlas-mark" aria-hidden="true"></span>让上下文，延续下去。
+    <span>Memory & context</span>
+  </figcaption>
+  <div class="atlas-mobile-flow">
+    <span>
+      交互事实<small>Source</small>
+    </span>
+    <i aria-hidden="true">→</i>
+    <span class="mobile-memory-node">
+      长期记忆<small>Memory</small>
+    </span>
+    <i aria-hidden="true">→</i>
+    <span>
+      当前上下文<small>Context</small>
+    </span>
+  </div>
+  <div class="atlas-drawing">
+    <svg
+      viewBox="0 0 480 320"
+      fill="none"
+      role="img"
+      aria-label="记忆概念图：交互形成有来源的记忆，记忆保留版本，并通过检索进入新的上下文。"
+    >
+      <defs>
+        <pattern id="atlas-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r=".75" fill="currentColor" opacity=".18" />
+        </pattern>
+        <linearGradient
+          id="atlas-plane"
+          x1="140"
+          y1="95"
+          x2="330"
+          y2="245"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stop-color="#9bbce0" stop-opacity=".15" />
+          <stop offset="1" stop-color="#9bbce0" stop-opacity=".025" />
+        </linearGradient>
+      </defs>
+      <rect x="8" y="8" width="464" height="304" fill="url(#atlas-grid)" />
+      <g class="atlas-scaffold" stroke="currentColor" opacity=".12">
+        <path d="m78 165 162-93 162 93-162 93Z" />
+        <path d="m78 185 162-93 162 93-162 93Z" />
+        <path d="M78 165v20m324-20v20M240 258v20" />
+      </g>
+      <g class="atlas-connections" stroke="currentColor" opacity=".25">
+        <path d="M115 112h42q15 0 15 15v18h28M282 174h40q15 0 15 15v25h14" />
+        <path d="M252 103V73q0-14 14-14h64" />
+        <path d="M217 211v37q0 13-13 13h-47" />
+      </g>
+      <path
+        class="atlas-path formation-path"
+        d="M115 112h42q15 0 15 15v18h28"
+        stroke="currentColor"
+        stroke-width="1.5"
+      />
+      <path
+        class="atlas-path evolution-path"
+        d="M252 103V73q0-14 14-14h64"
+        stroke="currentColor"
+        stroke-width="1.5"
+      />
+      <path
+        class="atlas-path retrieval-path"
+        d="M282 174h40q15 0 15 15v25h14"
+        stroke="currentColor"
+        stroke-width="1.5"
+      />
+      <g class="atlas-input">
+        <rect x="22" y="84" width="95" height="56" rx="7" class="atlas-box" />
+        <path d="M35 100h20m-20 7h55m-55 7h44" stroke="currentColor" opacity=".3" />
+        <text x="35" y="130">
+          Interaction
+        </text>
+      </g>
+      <g class="atlas-source">
+        <rect x="61" y="235" width="97" height="48" rx="6" class="atlas-box" />
+        <circle cx="77" cy="250" r="2" fill="currentColor" />
+        <text x="88" y="254">
+          Source
+        </text>
+        <path d="M75 267h66" stroke="currentColor" opacity=".25" />
+      </g>
+      <g class="atlas-version">
+        <rect x="330" y="35" width="108" height="48" rx="6" class="atlas-box" />
+        <text x="344" y="55">
+          Version history
+        </text>
+        <path d="M345 68h40m9 0h29" stroke="currentColor" opacity=".3" />
+        <circle cx="389" cy="68" r="2" fill="currentColor" />
+      </g>
+      <g class="atlas-memory">
+        <path
+          d="m177 133 65-37 65 37v61l-65 38-65-38Z"
+          fill="url(#atlas-plane)"
+          stroke="currentColor"
+          stroke-opacity=".5"
+        />
+        <path d="m177 133 65 38 65-38M242 171v61" stroke="currentColor" stroke-opacity=".4" />
+        <path
+          d="m177 150 65 38 65-38m-130 18 65 38 65-38"
+          stroke="currentColor"
+          stroke-opacity=".22"
+        />
+        <path d="m214 130 28-16 28 16-28 16Z" fill="currentColor" opacity=".14" />
+        <circle cx="242" cy="130" r="4" fill="currentColor" />
+        <text x="242" y="258" text-anchor="middle" class="atlas-main-label">
+          Long-term memory
+        </text>
+      </g>
+      <g class="atlas-output">
+        <rect x="350" y="188" width="109" height="66" rx="7" class="atlas-box" />
+        <text x="365" y="210">
+          Context
+        </text>
+        <path d="M365 224h62m-62 9h40m-40 9h51" stroke="currentColor" opacity=".3" />
+      </g>
+      <circle cx="172" cy="145" r="3" fill="currentColor" />
+      <circle cx="337" cy="189" r="3" fill="currentColor" />
+    </svg>
+  </div>
+  <div class="atlas-controls" role="group" aria-label="查看记忆链路的不同阶段">
+    {stages.map((stage, i) => (
+      <button
+        type="button"
+        data-memory-stage={stage.id}
+        data-description={stage.description}
+        aria-pressed={i === 0 ? 'true' : 'false'}
+      >
+        {stage.label}
+        <span aria-hidden="true">{i < 2 ? '→' : '↗'}</span>
+      </button>
+    ))}
+  </div>
+  <p class="atlas-explanation" aria-live="polite">
+    {stages[0].description}
+  </p>
+  <span class="atlas-footnote">记忆链路概念图</span>
+</figure>
+<script>
+  const atlas = document.querySelector<HTMLElement>('[data-memory-atlas]');
+  const stageButtons = atlas?.querySelectorAll<HTMLButtonElement>('[data-memory-stage]');
+  stageButtons?.forEach((button) =>
+    button.addEventListener('click', () => {
+      if (!atlas) return;
+      atlas.dataset.stage = button.dataset.memoryStage;
+      stageButtons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+      const description = atlas.querySelector('.atlas-explanation');
+      if (description) description.textContent = button.dataset.description || '';
+    }),
+  );
+</script>
