@@ -7,7 +7,7 @@ interface Props {
   index: number;
   headingLevel?: 2 | 3;
 }
-const { project: p, headingLevel = 3 } = Astro.props;
+const { project: p, index = 0, headingLevel = 3 } = Astro.props;
 const Heading = headingLevel === 2 ? 'h2' : 'h3';
 const category =
   p.slug === 'dive'
@@ -22,6 +22,8 @@ const category =
 <article
   class:list={['project-card', `case-${p.slug}`, { 'compact-project': p.compact }]}
   data-category={p.category}
+  data-reveal
+  data-reveal-delay={index * 90}
 >
   <div class="project-content">
     <div class="project-topline">
