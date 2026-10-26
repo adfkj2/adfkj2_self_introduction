@@ -56,9 +56,17 @@ jobs:
       - name: Deploy to Ubuntu
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
+          GH_TOKEN: ${{ github.token }}
           DEPLOY_HOST: ${{ vars.DEPLOY_HOST || '8.156.74.43' }}
           DEPLOY_USER: ${{ vars.DEPLOY_USER || 'deploy' }}
           DEPLOY_PORT: ${{ vars.DEPLOY_PORT || '22' }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
-        run: bash scripts/deploy-via-ssh.sh
+        run: |
+          latest_sha="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')"
+          if [[ "$latest_sha" != "$GITHUB_SHA" ]]; then
+            echo 'A newer main commit exists; skipping this older deployment.'
+            echo 'Skipped deployment because main has a newer commit.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          bash scripts/deploy-via-ssh.sh
