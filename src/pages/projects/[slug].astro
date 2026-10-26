@@ -1,0 +1,131 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectArt from '../../components/ProjectArt.astro';
+import Icon from '../../components/Icon.astro';
+import { projects, type Project } from '../../data/projects';
+import { profile } from '../../data/site';
+export function getStaticPaths() {
+  return projects.map((project, index) => ({
+    params: { slug: project.slug },
+    props: { project, next: projects[(index + 1) % projects.length] },
+  }));
+}
+interface Props {
+  project: Project;
+  next: Project;
+}
+const { project: p, next } = Astro.props;
+---
+
+<BaseLayout title={`${p.name} — ${profile.handle}`} description={`${p.subtitle}。${p.description}`}>
+  <div class="container detail-hero">
+    <nav class="breadcrumb" aria-label="面包屑">
+      <a href="/projects/">Projects</a>
+      <span>/</span>
+      <span aria-current="page">{p.name}</span>
+    </nav>
+    <div class="detail-heading">
+      <div>
+        <div class="eyebrow">{p.subtitle.toUpperCase()}</div>
+        <h1>
+          {p.name}
+          {!p.name.endsWith('.') && <span class="accent">.</span>}
+        </h1>
+        <p class="lead">{p.description}</p>
+      </div>
+      <span class:list={['status', p.statusKind]}>{p.status}</span>
+    </div>
+    <div class="detail-actions">
+      {p.github && (
+        <a class="button button-outline" href={p.github} target="_blank" rel="noopener noreferrer">
+          <Icon name="github" size={17} />
+          View repository
+          <Icon name="external" size={15} />
+        </a>
+      )}
+      <div class="tags">
+        {p.tags.map((tag) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </div>
+    </div>
+    <div class="detail-visual">
+      <ProjectArt kind={p.slug} />
+      <div class="detail-visual-caption">
+        <span>CONCEPTUAL VISUALIZATION / {p.name.toUpperCase()}</span>
+        <span>{p.focus}</span>
+      </div>
+    </div>
+    <div class="detail-grid">
+      <aside class="detail-aside">
+        <div class="eyebrow">ON THIS PROJECT</div>
+        <nav aria-label="项目目录">
+          {p.sections.map((s, i) => (
+            <a href={`#${s.id}`}>
+              <span>{String(i + 1).padStart(2, '0')}</span>
+              {s.label}
+            </a>
+          ))}
+        </nav>
+      </aside>
+      <div class="detail-body">
+        {p.sections.map((section) => (
+          <section class="detail-section" id={section.id}>
+            <div class="eyebrow">{section.label}</div>
+            <h2>{section.title}</h2>
+            {section.paragraphs?.map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+            {section.id === 'architecture' && (
+              <div class="architecture-flow">
+                {p.architecture.map((node, i) => (
+                  <>
+                    <div class="architecture-node">
+                      <small>0{i + 1}</small>
+                      {node}
+                    </div>
+                    {i < p.architecture.length - 1 && <span class="flow-arrow">→</span>}
+                  </>
+                ))}
+              </div>
+            )}
+            {section.bullets && (
+              <ul>
+                {section.bullets.map((bullet) => (
+                  <li>{bullet}</li>
+                ))}
+              </ul>
+            )}
+            {section.note && <div class="notice">{section.note}</div>}
+            {section.id === 'repository' &&
+              (p.github ? (
+                <a class="source-link" href={p.github} target="_blank" rel="noopener noreferrer">
+                  <span>
+                    {p.github.replace('https://github.com/', '')}
+                    <small>源码、架构与验证记录 · GitHub</small>
+                  </span>
+                  <Icon name="external" size={19} />
+                </a>
+              ) : (
+                <a
+                  class="text-link"
+                  href={p.slug === 'better-one' ? '/projects/dive/' : profile.github}
+                >
+                  {p.slug === 'better-one' ? '了解 D.I.V.E. 记忆引擎' : '浏览 GitHub 开源项目'}
+                  <Icon name="arrow" size={17} />
+                </a>
+              ))}
+          </section>
+        ))}
+        <p class="project-note">内容依据：{p.sourceNote}</p>
+      </div>
+    </div>
+    <a class="next-project" href={`/projects/${next.slug}/`}>
+      <div>
+        <span class="eyebrow">NEXT PROJECT</span>
+        <h2>{next.name}</h2>
+      </div>
+      <Icon name="arrow" size={28} />
+    </a>
+  </div>
+</BaseLayout>

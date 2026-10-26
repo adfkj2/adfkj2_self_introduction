@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { projects } from '../../data/projects';
+import { profile } from '../../data/site';
+---
+
+<BaseLayout
+  title={`Projects — ${profile.handle}`}
+  description="从长期 AI 记忆、知识增强问答，到 Java 后端与个人决策系统。查看项目架构、工程取舍与真实边界。"
+>
+  <div class="container">
+    <header class="page-hero">
+      <h1>
+        Selected work<span class="accent">.</span>
+      </h1>
+      <p>
+        把好奇心变成代码，把工程取舍留在记录里。
+        <br />
+        这里有持续迭代的系统，也有尚待验证的想法。
+      </p>
+    </header>
+    <div class="page-bottom">
+      <div class="page-caption">
+        <span class="mono">{projects.length} 个项目与探索</span>
+        <span>不同阶段，同样认真。</span>
+      </div>
+      <div class="filter-row" role="group" aria-label="筛选项目">
+        {[
+          { id: 'all', label: '全部项目' },
+          { id: 'ai', label: 'AI & Memory' },
+          { id: 'backend', label: 'Backend' },
+          { id: 'exploration', label: 'Exploration' },
+        ].map((filter, i) => (
+          <button
+            class="filter-button"
+            data-filter={filter.id}
+            aria-pressed={i === 0 ? 'true' : 'false'}
+          >
+            {filter.label}
+          </button>
+        ))}
+      </div>
+      <div class="project-grid" id="project-results">
+        {projects.map((project, index) => (
+          <ProjectCard project={project} index={index} headingLevel={2} />
+        ))}
+      </div>
+      <p class="project-note" id="filter-status" aria-live="polite">
+        显示全部 {projects.length} 个项目。项目的研发阶段、数据范围与局限均在详情页中说明。
+      </p>
+    </div>
+  </div>
+</BaseLayout>
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const cards = document.querySelectorAll<HTMLElement>('[data-category]');
+  const filters = new Set(Array.from(buttons, (button) => button.dataset.filter));
+
+  const renderFilter = (selected: string) => {
+    let count = 0;
+    buttons.forEach((button) => {
+      button.setAttribute('aria-pressed', String(button.dataset.filter === selected));
+    });
+    cards.forEach((card) => {
+      card.hidden = selected !== 'all' && card.dataset.category !== selected;
+      if (!card.hidden) count++;
+    });
+    const status = document.querySelector('#filter-status');
+    if (status) {
+      status.textContent = `显示 ${count} 个项目。项目的研发阶段、数据范围与局限均在详情页中说明。`;
+    }
+  };
+
+  const readFilter = () => {
+    const url = new URL(window.location.href);
+    const requested = url.searchParams.get('filter');
+    const selected = requested && filters.has(requested) ? requested : 'all';
+    // Keep unrelated query parameters and anchors; normalize unsupported filters.
+    if (requested && (selected === 'all' || !filters.has(requested))) {
+      url.searchParams.delete('filter');
+      window.history.replaceState(window.history.state, '', url);
+    }
+    renderFilter(selected);
+  };
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const selected = button.dataset.filter || 'all';
+      const url = new URL(window.location.href);
+      if (selected === 'all') url.searchParams.delete('filter');
+      else url.searchParams.set('filter', selected);
+      if (url.href !== window.location.href) {
+        window.history.pushState(null, '', url);
+      }
+      renderFilter(selected);
+    });
+  });
+
+  readFilter();
+  window.addEventListener('popstate', readFilter);
+</script>

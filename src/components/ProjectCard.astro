@@ -1,0 +1,73 @@
+---
+import type { Project } from '../data/projects';
+import Icon from './Icon.astro';
+import ProjectArt from './ProjectArt.astro';
+interface Props {
+  project: Project;
+  index: number;
+  headingLevel?: 2 | 3;
+}
+const { project: p, headingLevel = 3 } = Astro.props;
+const Heading = headingLevel === 2 ? 'h2' : 'h3';
+const category =
+  p.slug === 'dive'
+    ? '长期记忆系统'
+    : p.slug === 'medical'
+      ? '证据优先的知识问答'
+      : p.slug === 'tickets'
+        ? '后端工程实践'
+        : '个人决策系统';
+---
+
+<article
+  class:list={['project-card', `case-${p.slug}`, { 'compact-project': p.compact }]}
+  data-category={p.category}
+>
+  <div class="project-content">
+    <div class="project-topline">
+      <span class="project-category">{category}</span>
+      <span class:list={['status', p.statusKind]}>{p.status}</span>
+    </div>
+    <Heading class="project-title">
+      <a href={`/projects/${p.slug}/`} translate="no">
+        {p.name}
+      </a>
+    </Heading>
+    <p class="project-subtitle" translate="no">
+      {p.subtitle}
+    </p>
+    <p class="project-description">{p.description}</p>
+    <p class="project-focus">{p.focus}</p>
+    <div class="tags project-tech">
+      {p.tags.map((tag) => (
+        <span class="tag" translate="no">
+          {tag}
+        </span>
+      ))}
+    </div>
+    <div class="project-links">
+      <a class="text-link case-link" href={`/projects/${p.slug}/`}>
+        查看项目记录
+        <Icon name="arrow" size={17} />
+      </a>
+      {p.github ? (
+        <a
+          class="text-link source-link-small"
+          href={p.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${p.name} GitHub 仓库（新窗口）`}
+        >
+          <Icon name="github" size={17} />
+          GitHub
+          <Icon name="external" size={13} />
+        </a>
+      ) : (
+        <span class="project-stage-note">
+          {p.category === 'exploration' ? '构想与研发探索' : '持续开发中'}
+        </span>
+      )}
+    </div>
+  </div>
+  <ProjectArt kind={p.slug} />
+</article>

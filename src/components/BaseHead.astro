@@ -1,0 +1,70 @@
+---
+import '../styles/global.css';
+import { site, profile } from '../data/site';
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+  article?: boolean;
+}
+const {
+  title = site.title,
+  description = site.description,
+  noindex = false,
+  article = false,
+} = Astro.props;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
+const image = Astro.site ? new URL('/og-image.png', Astro.site) : undefined;
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="dark light" />
+<meta name="theme-color" content="#111418" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="author" content={profile.name || profile.handle} />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link
+  rel="preload"
+  href="/fonts/manrope-latin-variable.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+{canonical && <link rel="canonical" href={canonical} />}
+{Astro.site && <link rel="sitemap" href="/sitemap-index.xml" />}
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title={`${profile.handle} · Writing`}
+  href="/rss.xml"
+/>
+{noindex && <meta name="robots" content="noindex, follow" />}
+<meta property="og:type" content={article ? 'article' : 'website'} />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:site_name" content={profile.handle} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+{canonical && <meta property="og:url" content={canonical} />}
+{image && <meta property="og:image" content={image} />}
+{image && <meta property="og:image:width" content="1200" />}
+{image && <meta property="og:image:height" content="630" />}
+{image && (
+  <meta property="og:image:alt" content="adfkj2 — Reliable systems. Intelligent possibilities." />
+)}
+<meta name="twitter:card" content="summary_large_image" />
+<script is:inline>
+  (() => {
+    let theme = 'dark';
+    try {
+      theme = localStorage.getItem('portfolio-theme') === 'light' ? 'light' : 'dark';
+    } catch {
+      /* Keep the default theme when browser storage is unavailable. */
+    }
+    document.documentElement.dataset.theme = theme;
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', theme === 'light' ? '#f2f5f8' : '#111418');
+  })();
+</script>

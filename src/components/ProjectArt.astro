@@ -1,0 +1,162 @@
+---
+import Icon from './Icon.astro';
+interface Props {
+  kind: 'dive' | 'medical' | 'tickets' | 'better-one';
+}
+const { kind } = Astro.props;
+---
+
+<div class:list={['project-art', `art-${kind}`]} aria-hidden="true">
+  {kind === 'dive' && (
+    <div class="memory-blueprint">
+      <div class="blueprint-heading">
+        <span>D.I.V.E. memory lifecycle</span>
+        <Icon name="database" size={19} />
+      </div>
+      <div class="blueprint-mobile-flow">
+        <div>
+          <small>Formation</small>
+          <strong>形成记忆</strong>
+          <span>事实与来源</span>
+        </div>
+        <div>
+          <small>Evolution</small>
+          <strong>更新版本</strong>
+          <span>保留演化边界</span>
+        </div>
+        <div>
+          <small>Retrieval</small>
+          <strong>检索证据</strong>
+          <span>与当前问题相关</span>
+        </div>
+        <div>
+          <small>Context</small>
+          <strong>组织上下文</strong>
+          <span>在有限窗口中使用</span>
+        </div>
+      </div>
+      <svg viewBox="0 0 520 290" fill="none">
+        <defs>
+          <pattern id="blueprint-grid" width="26" height="26" patternUnits="userSpaceOnUse">
+            <path d="M26 0H0v26" stroke="currentColor" stroke-opacity=".055" />
+          </pattern>
+        </defs>
+        <rect width="520" height="290" fill="url(#blueprint-grid)" />
+        <g stroke="currentColor" stroke-opacity=".32">
+          <path d="M71 130h70m131 0h70m-135 44v37h136V160" />
+          <path d="m133 125 8 5-8 5m201-10 8 5-8 5" />
+        </g>
+        <g class="blueprint-quiet">
+          <rect x="21" y="95" width="91" height="70" rx="8" />
+          <path d="M38 113h46m-46 10h33m-33 10h40" />
+          <text x="66" y="152" text-anchor="middle">
+            Interaction
+          </text>
+        </g>
+        <g class="blueprint-core">
+          <rect x="141" y="75" width="132" height="108" rx="10" />
+          <path d="M158 105h98m-98 14h70m-70 14h84" stroke-opacity=".3" />
+          <text x="207" y="161" text-anchor="middle">
+            Memory
+          </text>
+          <circle cx="255" cy="92" r="3" fill="currentColor" />
+        </g>
+        <g class="blueprint-quiet">
+          <rect x="342" y="94" width="150" height="71" rx="8" />
+          <path d="M361 113h110m-110 11h82" />
+          <text x="417" y="151" text-anchor="middle">
+            Context packing
+          </text>
+        </g>
+        <text x="211" y="48" class="blueprint-caption" text-anchor="middle">
+          Formation & evolution
+        </text>
+        <text x="307" y="116" class="blueprint-caption" text-anchor="middle">
+          Retrieval
+        </text>
+        <g class="blueprint-notes">
+          <text x="163" y="241">
+            来源可回看
+          </text>
+          <text x="280" y="241">
+            版本与更新边界
+          </text>
+          <text x="21" y="277" class="blueprint-caption">
+            概念架构 / 从交互到可延续的上下文
+          </text>
+        </g>
+      </svg>
+      <div class="blueprint-legend">
+        <span>
+          <i></i> Formation
+        </span>
+        <span>
+          <i></i> Evolution
+        </span>
+        <span>
+          <i></i> Retrieval
+        </span>
+      </div>
+    </div>
+  )}
+  {kind === 'medical' && (
+    <div class="pipeline-visual">
+      <div class="pipeline-step">
+        <span class="pipeline-number">1</span>
+        <div>
+          <strong>Retrieval</strong>
+          <span>标签文档 + 知识图谱路径</span>
+        </div>
+        <Icon name="nodes" size={23} />
+      </div>
+      <div class="pipeline-connector"></div>
+      <div class="pipeline-step">
+        <span class="pipeline-number">2</span>
+        <div>
+          <strong>Reranking</strong>
+          <span>融合候选，选择相关证据</span>
+        </div>
+        <Icon name="code" size={23} />
+      </div>
+      <div class="pipeline-connector"></div>
+      <div class="pipeline-step">
+        <span class="pipeline-number">3</span>
+        <div>
+          <strong>Generation</strong>
+          <span>组织答案，保留来源</span>
+        </div>
+        <Icon name="file" size={23} />
+      </div>
+      <p class="pipeline-note">Evidence before generation.</p>
+    </div>
+  )}
+  {kind === 'tickets' && (
+    <div class="project-note-symbol">
+      <Icon name="terminal" size={35} />
+    </div>
+  )}
+  {kind === 'better-one' && (
+    <div class="project-note-symbol">
+      <svg width="45" height="45" viewBox="0 0 45 45" fill="none">
+        <ellipse
+          cx="22"
+          cy="22"
+          rx="11"
+          ry="19"
+          transform="rotate(-34 22 22)"
+          stroke="currentColor"
+        />
+        <ellipse
+          cx="22"
+          cy="22"
+          rx="11"
+          ry="19"
+          transform="rotate(34 22 22)"
+          stroke="currentColor"
+          opacity=".5"
+        />
+        <circle cx="22" cy="22" r="3" fill="currentColor" />
+      </svg>
+    </div>
+  )}
+</div>

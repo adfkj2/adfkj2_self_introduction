@@ -1,0 +1,39 @@
+---
+import Icon from './Icon.astro';
+import { topics } from '../data/site';
+interface Props {
+  topic?: string;
+  headingLevel?: 2 | 3;
+  compact?: boolean;
+}
+const { topic, headingLevel = 2, compact = false } = Astro.props;
+const Heading = headingLevel === 2 ? 'h2' : 'h3';
+---
+
+<div class:list={['journal-empty', { 'journal-compact': compact }]}>
+  <div class="journal-empty-copy">
+    <span class="journal-state">
+      <span></span>正式文章尚未发布
+    </span>
+    <Heading class="journal-title">
+      {topic ? '这个方向，还在积累中。' : '把工程中的取舍，写清楚。'}
+    </Heading>
+  </div>
+  <div class="journal-empty-action">
+    <p>关于系统如何可靠地运行、记忆如何更新，以及代码背后值得复盘的选择。</p>
+    <a class="text-link" href="/writing/examples/reading-experience/">
+      查看阅读排版示例<span class="example-marker">示例</span>
+      <Icon name="arrow" size={17} />
+    </a>
+  </div>
+  {!compact && (
+    <div class="journal-topics">
+      {topics.map((t) => (
+        <a class="journal-topic" href={`/writing/tags/${t.slug}/`}>
+          <span>{t.label}</span>
+          <Icon name="arrow" size={17} />
+        </a>
+      ))}
+    </div>
+  )}
+</div>

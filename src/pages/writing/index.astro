@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WritingEmpty from '../../components/WritingEmpty.astro';
+import PostList from '../../components/PostList.astro';
+import Icon from '../../components/Icon.astro';
+import { getPublishedPosts } from '../../utils/posts';
+import { topics, profile } from '../../data/site';
+const posts = await getPublishedPosts();
+---
+
+<BaseLayout
+  title={`Writing — ${profile.handle}`}
+  description="关于 Java、数据库、AI Agent 与系统设计的技术笔记。把工程实践里的问题和取舍，慢慢写清楚。"
+>
+  <div class="container">
+    <header class="page-hero">
+      <div class="eyebrow">THINKING THROUGH BUILDING</div>
+      <h1>
+        The engineering journal<span class="accent">.</span>
+      </h1>
+      <p>
+        记录代码背后的问题，也记录解决问题时的取舍。
+        <br />
+        不急着给出答案，先把过程讲清楚。
+      </p>
+    </header>
+    <div class="page-bottom">
+      <div class="page-caption">
+        <span class="mono">{String(posts.length).padStart(2, '0')} PUBLISHED ENTRIES</span>
+        <a class="text-link" href="/rss.xml">
+          <Icon name="rss" size={14} />
+          RSS 订阅
+        </a>
+      </div>
+      <nav class="filter-row" aria-label="按主题浏览">
+        <a class="filter-button" href="/writing/" aria-current="page">
+          全部文章
+        </a>
+        {topics.map((t) => (
+          <a class="filter-button" href={`/writing/tags/${t.slug}/`}>
+            {t.label}
+          </a>
+        ))}
+      </nav>
+      {posts.length ? <PostList posts={posts} /> : <WritingEmpty />}
+      <p class="project-note">这里只收录正式发布的文章。排版示例与草稿单独保留，不计入文章数量。</p>
+    </div>
+  </div>
+</BaseLayout>

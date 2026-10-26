@@ -1,0 +1,59 @@
+---
+import { profile } from '../data/site';
+import Icon from './Icon.astro';
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <h2>
+          聊聊一个
+          <br />
+          值得构建的想法。
+        </h2>
+      </div>
+      <div class="footer-contact">
+        <p>
+          关于后端、AI 记忆，
+          <br />
+          或一次有意思的技术交流。
+        </p>
+        <a
+          class="footer-email"
+          href={profile.email ? `mailto:${profile.email}` : profile.github}
+          target={profile.email ? undefined : '_blank'}
+          rel="noopener noreferrer"
+        >
+          {profile.email || 'Find me on GitHub'}
+          <Icon name="external" size={20} />
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <a class="footer-brand" href="/" translate="no">
+        {profile.name || profile.handle}
+        <span>/ {profile.handle}</span>
+      </a>
+      <span>© {new Date().getFullYear()}</span>
+      <div class="footer-links">
+        <a href={profile.github} target="_blank" rel="noopener noreferrer">
+          GitHub
+          <Icon name="external" size={13} />
+        </a>
+        <a href="/rss.xml">
+          RSS
+          <Icon name="rss" size={14} />
+        </a>
+        {profile.icpNumber && (
+          <a href={profile.icpUrl} target="_blank" rel="noopener noreferrer">
+            {profile.icpNumber}
+          </a>
+        )}
+        <a href="#top" class="back-to-top" aria-label="回到顶部">
+          ↑
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>

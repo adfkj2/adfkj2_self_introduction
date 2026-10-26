@@ -1,0 +1,112 @@
+---
+import Icon from './Icon.astro';
+import { navigation, profile } from '../data/site';
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/'
+    ? path === '/'
+    : path.startsWith(href) || (href === '/writing/' && path.startsWith('/blog/'));
+---
+
+<header class="site-header" id="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label={`${profile.handle} 首页`} translate="no">
+      <span class="brand-mark" aria-hidden="true">
+        a<span>/</span>
+      </span>
+      <span class="brand-name">
+        {profile.name || profile.handle}
+        <span class="brand-handle">{profile.handle}</span>
+      </span>
+    </a>
+    <nav class="desktop-nav" aria-label="主导航">
+      {navigation.map((item) => (
+        <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+          {item.label}
+        </a>
+      ))}
+    </nav>
+    <div class="header-actions">
+      <a
+        class="header-github"
+        href={profile.github}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="GitHub 个人主页（新窗口）"
+        translate="no"
+      >
+        <Icon name="github" size={18} />
+        <span>GitHub</span>
+        <Icon name="external" size={13} />
+      </a>
+      <span class="header-divider" aria-hidden="true"></span>
+      <button class="icon-button theme-toggle" aria-label="切换到浅色主题" title="切换主题">
+        <Icon name="sun" size={18} class="sun-icon" />
+        <Icon name="moon" size={18} class="moon-icon" />
+      </button>
+      <button
+        class="icon-button mobile-toggle"
+        aria-label="打开导航"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+      >
+        <Icon name="menu" class="menu-icon" />
+        <Icon name="close" class="close-icon" />
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-nav container" id="mobile-nav" aria-label="移动端导航" hidden>
+    {navigation.map((item) => (
+      <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+        {item.label}
+        <Icon name="arrow" size={18} />
+      </a>
+    ))}
+  </nav>
+</header>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.mobile-toggle');
+  const menu = document.querySelector<HTMLElement>('#mobile-nav');
+  const close = () => {
+    toggle?.setAttribute('aria-expanded', 'false');
+    toggle?.setAttribute('aria-label', '打开导航');
+    if (menu) menu.hidden = true;
+  };
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') !== 'true';
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? '关闭导航' : '打开导航');
+    if (menu) menu.hidden = !open;
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
+      close();
+      toggle.focus();
+    }
+  });
+  menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
+  matchMedia('(min-width: 769px)').addEventListener('change', close);
+  const themeButton = document.querySelector<HTMLButtonElement>('.theme-toggle');
+  const updateThemeControls = () => {
+    const isLight = document.documentElement.dataset.theme === 'light';
+    themeButton?.setAttribute('aria-label', isLight ? '切换到深色主题' : '切换到浅色主题');
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', isLight ? '#f2f5f8' : '#111418');
+  };
+  updateThemeControls();
+  themeButton?.addEventListener('click', () => {
+    const theme = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = theme;
+    try {
+      localStorage.setItem('portfolio-theme', theme);
+    } catch {
+      /* Theme works without storage. */
+    }
+    updateThemeControls();
+  });
+  const header = document.querySelector('#site-header');
+  const onScroll = () => header?.classList.toggle('scrolled', window.scrollY > 12);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>
