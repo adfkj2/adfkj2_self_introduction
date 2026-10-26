@@ -57,12 +57,15 @@ const image = Astro.site ? new URL('/og-image.png', Astro.site) : undefined;
 <script is:inline>
   (() => {
     let theme = 'dark';
+    let motionPaused = matchMedia('(prefers-reduced-motion: reduce)').matches;
     try {
       theme = localStorage.getItem('portfolio-theme') === 'light' ? 'light' : 'dark';
+      motionPaused ||= localStorage.getItem('portfolio-motion-paused') === 'true';
     } catch {
       /* Keep the default theme when browser storage is unavailable. */
     }
     document.documentElement.dataset.theme = theme;
+    document.documentElement.dataset.motionPaused = String(motionPaused);
     document
       .querySelector('meta[name="theme-color"]')
       ?.setAttribute('content', theme === 'light' ? '#f2f5f8' : '#111418');

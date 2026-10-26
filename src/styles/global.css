@@ -457,7 +457,7 @@ summary:focus-visible,
   letter-spacing: -0.045em;
   font-weight: 600;
 }
-.hero h1 span {
+.hero h1 > span {
   display: block;
 }
 .hero-description {

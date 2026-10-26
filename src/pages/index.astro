@@ -19,6 +19,8 @@ const focusLinks = [
 
 <BaseLayout>
   <section class="hero container" aria-labelledby="hero-title">
+    <div class="hero-glow hero-glow-1" aria-hidden="true"></div>
+    <div class="hero-glow hero-glow-2" aria-hidden="true"></div>
     <div class="hero-main">
       <div class="hero-copy">
         <p class="hero-identity">
@@ -30,8 +32,10 @@ const focusLinks = [
         </p>
         <p class="hero-role">Java backend engineer & AI agent builder</p>
         <h1 id="hero-title">
-          <span>构建可靠的系统。</span>
-          <span>探索智能的边界。</span>
+          <span class="hero-line">构建可靠的系统。</span>
+          <span class="hero-line">
+            探索<span class="hero-shimmer">智能的边界</span>。
+          </span>
         </h1>
         <p class="hero-description">
           用 Java 构建后端，用记忆与检索增强 Agent。
@@ -39,7 +43,7 @@ const focusLinks = [
           关注系统的正确性，也探索智能更可靠的使用方式。
         </p>
         <div class="hero-cta">
-          <a class="button button-primary" href="/projects/">
+          <a class="button button-primary magnetic" href="/projects/">
             浏览项目
             <Icon name="arrow" size={18} />
           </a>
@@ -55,17 +59,93 @@ const focusLinks = [
     </div>
     <div class="tech-strip">
       <p>技术方向</p>
-      <div class="tech-items" translate="no">
-        <span>Java</span>
-        <span>Spring Boot</span>
-        <span>PostgreSQL</span>
-        <span>AI Agents</span>
-        <span>RAG</span>
+      <div class="marquee">
+        <div class="marquee-track">
+          <div class="marquee-group" translate="no">
+            <span>Java</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>Spring Boot</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>MySQL</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>PostgreSQL</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>AI Agents</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>RAG</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>Long-term Memory</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>Vector Search</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>Linux</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+          </div>
+          <div class="marquee-group" aria-hidden="true" translate="no">
+            <span>Java</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>Spring Boot</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>MySQL</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>PostgreSQL</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>AI Agents</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>RAG</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>Long-term Memory</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>Vector Search</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+            <span>Linux</span>
+            <i class="marquee-dot" aria-hidden="true">
+              ✦
+            </i>
+          </div>
+        </div>
       </div>
     </div>
+    <button class="motion-toggle" type="button" data-motion-toggle aria-pressed="false" hidden>
+      暂停动效
+    </button>
   </section>
   <section class="container section work-section" aria-labelledby="work-title">
-    <div class="section-heading">
+    <div class="section-heading" data-reveal>
       <div>
         <h2 class="section-title" id="work-title">
           作品与实践
@@ -84,7 +164,7 @@ const focusLinks = [
   </section>
   <section class="container section focus-section" aria-labelledby="focus-title">
     <div class="focus-layout">
-      <div class="focus-lead">
+      <div class="focus-lead" data-reveal>
         <h2 class="section-title" id="focus-title">
           向下扎根，
           <br />
@@ -98,7 +178,7 @@ const focusLinks = [
       </div>
       <div class="focus-list">
         {topics.map((topic, i) => (
-          <div class="focus-item">
+          <div class="focus-item" data-reveal data-reveal-delay={i * 90}>
             <div>
               <h3>{topic.label}</h3>
               <p>{topic.description}</p>
@@ -113,7 +193,7 @@ const focusLinks = [
     </div>
   </section>
   <section class="container section writing-section" aria-labelledby="writing-title">
-    <div class="section-heading">
+    <div class="section-heading" data-reveal>
       <div>
         <p class="section-kicker">Journal</p>
         <h2 class="section-title" id="writing-title">
@@ -125,9 +205,17 @@ const focusLinks = [
         <Icon name="arrow" size={18} />
       </a>
     </div>
-    {posts.length ? <PostList posts={posts} /> : <WritingEmpty headingLevel={3} compact />}
+    {posts.length ? (
+      <div data-reveal>
+        <PostList posts={posts} />
+      </div>
+    ) : (
+      <div data-reveal>
+        <WritingEmpty headingLevel={3} compact />
+      </div>
+    )}
   </section>
-  <section class="container about-preview" aria-labelledby="about-title">
+  <section class="container about-preview" aria-labelledby="about-title" data-reveal>
     <div class="about-signature" aria-hidden="true">
       a<span>/</span>
     </div>
