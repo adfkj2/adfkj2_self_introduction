@@ -2,6 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import WritingEmpty from '../../../components/WritingEmpty.astro';
 import PostList from '../../../components/PostList.astro';
+import BlogNav from '../../../components/BlogNav.astro';
 import { getPublishedPosts } from '../../../utils/posts';
 import { topics, profile } from '../../../data/site';
 export function getStaticPaths() {
@@ -24,20 +25,7 @@ const posts = (await getPublishedPosts()).filter((post) =>
       <p>{topic.description}</p>
     </header>
     <div class="page-bottom">
-      <nav class="filter-row" aria-label="按主题浏览">
-        <a class="filter-button" href="/writing/">
-          全部文章
-        </a>
-        {topics.map((t) => (
-          <a
-            class="filter-button"
-            href={`/writing/tags/${t.slug}/`}
-            aria-current={t.slug === topic.slug ? 'page' : undefined}
-          >
-            {t.label}
-          </a>
-        ))}
-      </nav>
+      <BlogNav current={topic.slug} />
       <p class="page-caption">{posts.length} 篇正式文章</p>
       {posts.length ? <PostList posts={posts} /> : <WritingEmpty topic={topic.label} />}
     </div>
