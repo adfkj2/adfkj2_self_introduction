@@ -3,8 +3,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import WritingEmpty from '../../components/WritingEmpty.astro';
 import PostList from '../../components/PostList.astro';
 import Icon from '../../components/Icon.astro';
+import BlogNav from '../../components/BlogNav.astro';
 import { getPublishedPosts } from '../../utils/posts';
-import { topics, profile } from '../../data/site';
+import { profile } from '../../data/site';
 const posts = await getPublishedPosts();
 ---
 
@@ -32,16 +33,7 @@ const posts = await getPublishedPosts();
           RSS 订阅
         </a>
       </div>
-      <nav class="filter-row" aria-label="按主题浏览">
-        <a class="filter-button" href="/writing/" aria-current="page">
-          全部文章
-        </a>
-        {topics.map((t) => (
-          <a class="filter-button" href={`/writing/tags/${t.slug}/`}>
-            {t.label}
-          </a>
-        ))}
-      </nav>
+      <BlogNav />
       {posts.length ? <PostList posts={posts} /> : <WritingEmpty />}
       <p class="project-note">这里只收录正式发布的文章。排版示例与草稿单独保留，不计入文章数量。</p>
     </div>

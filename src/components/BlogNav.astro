@@ -1,0 +1,128 @@
+---
+import { topics } from '../data/site';
+import { getPublishedPosts } from '../utils/posts';
+
+interface Props {
+  /** 当前高亮项：'all' 或分类 slug（文章页传文章第一个 tag）。 */
+  current?: string | null;
+  /** 文章所在的分类是当前位置，不是当前文章页面。 */
+  inArticle?: boolean;
+}
+const { current = 'all', inArticle = false } = Astro.props;
+const currentKind = inArticle ? 'location' : 'page';
+
+const posts = await getPublishedPosts();
+const counts = new Map<string, number>();
+for (const post of posts) {
+  for (const tag of post.data.tags) {
+    counts.set(tag, (counts.get(tag) ?? 0) + 1);
+  }
+}
+const fmt = (n: number) => String(n).padStart(2, '0');
+---
+
+<nav class="blog-nav" aria-label="博客分类导航">
+  <div class="blog-nav-track">
+    <a
+      class="blog-nav-link"
+      href="/writing/"
+      aria-current={current === 'all' ? currentKind : undefined}
+    >
+      全部文章
+      <span class="blog-nav-count">{fmt(posts.length)}</span>
+    </a>
+    {topics.map((topic) => (
+      <a
+        class="blog-nav-link"
+        href={`/writing/tags/${topic.slug}/`}
+        aria-current={current === topic.slug ? currentKind : undefined}
+        title={topic.description}
+      >
+        {topic.label}
+        <span class="blog-nav-count">{fmt(counts.get(topic.slug) ?? 0)}</span>
+      </a>
+    ))}
+  </div>
+</nav>
+
+<script>
+  // Keep a deep-linked topic visible without moving the page vertically.
+  document.querySelectorAll<HTMLElement>('.blog-nav-track').forEach((track) => {
+    const revealLink = (link: HTMLElement | null) => {
+      if (!link || track.scrollWidth <= track.clientWidth) return;
+      track.scrollLeft = link.offsetLeft - (track.clientWidth - link.offsetWidth) / 2;
+    };
+    const current = track.querySelector<HTMLElement>('[aria-current]');
+    revealLink(current);
+    track.addEventListener('focusin', (event) => {
+      if (event.target instanceof HTMLAnchorElement) revealLink(event.target);
+    });
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(() => {
+        const focused = document.activeElement;
+        revealLink(focused instanceof HTMLElement && track.contains(focused) ? focused : current);
+      }).observe(track);
+    }
+  });
+</script>
+
+<style>
+  .blog-nav {
+    border-block: 1px solid var(--line);
+    margin-bottom: 34px;
+  }
+  .blog-nav-track {
+    position: relative;
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-padding-inline: 8px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .blog-nav-track::-webkit-scrollbar {
+    display: none;
+  }
+  .blog-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    min-height: 44px;
+    padding: 8px 14px 6px;
+    font-size: 13px;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+  .blog-nav-link:hover {
+    color: var(--text);
+    border-bottom-color: var(--faint);
+  }
+  .blog-nav-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -4px;
+    border-radius: 4px;
+  }
+  .blog-nav-link[aria-current] {
+    color: var(--accent);
+    border-bottom-color: var(--accent-strong);
+  }
+  .blog-nav-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.5;
+    padding: 1px 7px;
+    color: var(--faint);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-variant-numeric: tabular-nums;
+  }
+  .blog-nav-link[aria-current] .blog-nav-count {
+    color: var(--accent);
+    border-color: var(--accent-strong);
+  }
+</style>

@@ -2,6 +2,7 @@
 import type { MarkdownHeading } from 'astro';
 import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
+import BlogNav from '../components/BlogNav.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Icon from '../components/Icon.astro';
 import { profile, topics } from '../data/site';
@@ -47,6 +48,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
         阅读体验，非个人已发表的技术成果，不进入正式文章列表或 RSS。
       </aside>
     )}
+    <BlogNav current={example ? null : (tags[0] ?? 'all')} inArticle />
     <header class="article-header">
       <div class="eyebrow">{example ? 'EXAMPLE / READING EXPERIENCE' : category.toUpperCase()}</div>
       <h1>{title}</h1>
