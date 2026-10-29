@@ -7,6 +7,7 @@ import WritingEmpty from '../components/WritingEmpty.astro';
 import PostList from '../components/PostList.astro';
 import { projects } from '../data/projects';
 import { availability, profile, topics } from '../data/site';
+import { personJsonLd } from '../utils/seo';
 import { getPublishedPosts } from '../utils/posts';
 const posts = (await getPublishedPosts()).slice(0, 4);
 const focusLinks = [
@@ -17,7 +18,7 @@ const focusLinks = [
 ];
 ---
 
-<BaseLayout>
+<BaseLayout jsonLd={personJsonLd(Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined)}>
   <section class="hero container" aria-labelledby="hero-title">
     <div class="hero-glow hero-glow-1" aria-hidden="true"></div>
     <div class="hero-glow hero-glow-2" aria-hidden="true"></div>

@@ -4,6 +4,7 @@ import ProjectArt from '../../components/ProjectArt.astro';
 import ProjectShots from '../../components/ProjectShots.astro';
 import Icon from '../../components/Icon.astro';
 import { projects, type Project } from '../../data/projects';
+import { projectJsonLd } from '../../utils/seo';
 import { profile } from '../../data/site';
 export function getStaticPaths() {
   return projects.map((project, index) => ({
@@ -18,7 +19,11 @@ interface Props {
 const { project: p, next } = Astro.props;
 ---
 
-<BaseLayout title={`${p.name} — ${profile.handle}`} description={`${p.subtitle}。${p.description}`}>
+<BaseLayout
+  title={`${p.name} — ${profile.handle}`}
+  description={`${p.subtitle}。${p.description}`}
+  jsonLd={projectJsonLd(p, Astro.site)}
+>
   <div class="container detail-hero">
     <nav class="breadcrumb" aria-label="面包屑">
       <a href="/projects/">Projects</a>
@@ -50,6 +55,16 @@ const { project: p, next } = Astro.props;
         ))}
       </div>
     </div>
+    {p.summary && (
+      <dl class="project-summary">
+        {p.summary.map((item) => (
+          <div class="summary-row">
+            <dt>{item.label}</dt>
+            <dd>{item.value}</dd>
+          </div>
+        ))}
+      </dl>
+    )}
     <div class="detail-visual">
       <ProjectArt kind={p.slug} />
       <div class="detail-visual-caption">

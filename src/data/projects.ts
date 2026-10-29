@@ -12,6 +12,11 @@ export interface ProjectShot {
   alt: string;
   caption?: string;
 }
+/** 详情页摘要：只写能对照源码与文档确认的内容。 */
+export interface ProjectSummaryItem {
+  label: string;
+  value: string;
+}
 export interface Project {
   slug: 'dive' | 'medical' | 'tickets' | 'better-one';
   name: string;
@@ -28,6 +33,7 @@ export interface Project {
   sections: ProjectSection[];
   sourceNote: string;
   shots?: ProjectShot[];
+  summary?: ProjectSummaryItem[];
 }
 export const projects: Project[] = [
   {
@@ -37,6 +43,12 @@ export const projects: Project[] = [
     description:
       '让交互沉淀为记忆，让记忆成为下一次推理的起点。探索长期记忆的形成、演化与语义检索。',
     focus: '记忆生命周期 · 一致性边界 · 可复核实验',
+    summary: [
+      { label: '角色', value: '独立设计与实现' },
+      { label: '技术栈', value: 'Python · 本地存储 · 记忆与检索模块' },
+      { label: '范围', value: '记忆的形成、演化与语义检索，服务本地项目协作' },
+      { label: '证据', value: '100K 规模实验记录；性能与并发结论未逐项复核' },
+    ],
     category: 'ai',
     status: '持续迭代',
     tags: ['Python', 'PostgreSQL', 'pgvector', 'AI Memory'],
@@ -133,6 +145,12 @@ export const projects: Project[] = [
     subtitle: 'Medical Knowledge QA Agent',
     description: '将文档检索与知识图谱路径连接起来。让每一次生成，都能回到可追溯的证据。',
     focus: '混合检索 · 证据重排 · 受约束生成',
+    summary: [
+      { label: '角色', value: '独立实现的研究 Demo' },
+      { label: '技术栈', value: 'Python · FAISS / BGE-M3 可选 · 规则重排' },
+      { label: '范围', value: '药品标签检索与图谱路径，受约束生成并返回来源' },
+      { label: '证据', value: 'README 给出离线验收方法；本站未重跑模型与外部接口' },
+    ],
     category: 'ai',
     status: 'Research demo',
     tags: ['RAG', 'FAISS', 'BGE-M3', 'Knowledge Graph'],
@@ -225,6 +243,12 @@ export const projects: Project[] = [
     subtitle: 'Enterprise IT Service Desk · Spring Boot + Spring AI',
     description: '把报障、接单、指派、知识沉淀与只读 AI 助手，收进同一条可追溯的业务链路。',
     focus: '模块化单体 · 状态机 · 只读 AI 工具',
+    summary: [
+      { label: '角色', value: '独立完成后端与管理台' },
+      { label: '技术栈', value: 'Java 21 · Spring Boot 3.5 · Spring AI · MyBatis · MySQL · Vue 3' },
+      { label: '范围', value: '工单全流程、知识库、三角色权限与只读 AI 助手' },
+      { label: '证据', value: 'README 声明 68 个自动化用例；本站未重新执行' },
+    ],
     category: 'backend',
     status: '持续迭代',
     compact: true,
@@ -333,6 +357,12 @@ export const projects: Project[] = [
     subtitle: 'Personal Decision Intelligence System',
     description: '让真实自我与理想自我协作，探索长期记忆驱动的个人决策。',
     focus: '本地优先 · 偏好建模 · 长期决策',
+    summary: [
+      { label: '角色', value: '产品构想与技术探索' },
+      { label: '技术栈', value: '计划复用 D.I.V.E. 的记忆能力' },
+      { label: '范围', value: '个人情境、偏好建模与决策反思' },
+      { label: '证据', value: '尚无原型、用户研究或效果指标' },
+    ],
     category: 'exploration',
     status: '产品探索',
     statusKind: 'exploration',

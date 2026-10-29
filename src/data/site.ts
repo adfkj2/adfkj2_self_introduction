@@ -3,7 +3,7 @@ export const profile = {
   handle: 'adfkj2',
   name: '李鹏',
   email: '3574089451@qq.com',
-  phone: '19115858670',
+  phone: '',
   github: 'https://github.com/adfkj2',
   university: '四川大学',
   major: '计算机科学与技术',

@@ -10,6 +10,18 @@
 6. 检查首页、四个项目页、Writing、About、404、RSS、Sitemap、robots、分享图和简历。核对 Canonical 与 RSS 不再出现 localhost。
 7. 保留上一版本目录。如需回滚，把 `current` 链接指回上一版本，然后重新验证。
 
+## 旧路径重定向
+
+站内 `/blog/` 已改为只做跳转的页面，并声明 `noindex` + `canonical=/writing/`。若希望返回真正的 301，需要在服务器 Nginx 配置里加：
+
+```nginx
+location = /blog/ {
+    return 301 /writing/;
+}
+```
+
+`ops/nginx.conf.example` 已包含该片段。发布脚本只下发 `dist/`，不会改动服务器配置，因此需要手动修改并 `nginx -t` 后重载。
+
 ## HTTPS 与缓存
 
 配置示例只展示 HTTP 静态站点结构。实际部署需要给 `adfkj2.cloud` 签发证书，再由 Nginx 提供 HTTPS，并将 HTTP 重定向到 HTTPS。证书工具与阿里云规则请在部署当天参考对应官方文档；当前配置并不表示证书或 DNS 已就绪。

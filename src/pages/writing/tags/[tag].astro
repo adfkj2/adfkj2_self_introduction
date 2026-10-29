@@ -14,7 +14,11 @@ const posts = (await getPublishedPosts()).filter((post) =>
 );
 ---
 
-<BaseLayout title={`${topic.label} — Writing — ${profile.handle}`} description={topic.description}>
+<BaseLayout
+  title={`${topic.label} — Writing — ${profile.handle}`}
+  description={topic.description}
+  noindex={posts.length === 0}
+>
   <div class="container">
     <header class="page-hero">
       <div class="eyebrow">JOURNAL / TOPIC</div>

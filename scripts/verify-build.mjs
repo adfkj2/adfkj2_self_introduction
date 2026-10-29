@@ -66,6 +66,14 @@ const example = await readFile(
   'utf8',
 );
 assert.match(example, /name="robots" content="noindex, follow"/);
+const legacyBlog = await readFile(join(root, 'blog/index.html'), 'utf8');
+assert.match(legacyBlog, /name="robots" content="noindex, follow"/);
+assert.match(legacyBlog, /rel="canonical" href="[^"]*\/writing\/"/);
+assert.match(legacyBlog, /http-equiv="refresh" content="0; url=\/writing\/"/);
+const homeDoc = await readFile(join(root, 'index.html'), 'utf8');
+assert.match(homeDoc, /"@type":"Person"/);
+const projectDoc = await readFile(join(root, 'projects/tickets/index.html'), 'utf8');
+assert.match(projectDoc, /"@type":"BreadcrumbList"/);
 const rss = await readFile(join(root, 'rss.xml'), 'utf8');
 assert.ok(!rss.includes('reading-experience'), 'Example leaked into RSS');
 const home = await readFile(join(root, 'index.html'), 'utf8');

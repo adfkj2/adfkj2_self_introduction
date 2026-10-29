@@ -15,6 +15,11 @@ server {
     gzip_types text/css application/javascript application/json application/xml image/svg+xml;
     gzip_min_length 1024;
 
+    # 可选：把旧的 /blog/ 直接 301 到 /writing/。站内 /blog/ 页面已声明 noindex，
+    # 但这属于服务器配置，发布脚本不会自动下发，需要手动改配置后 nginx -t && reload。
+    location = /blog/ {
+        return 301 /writing/;
+    }
     location / {
         try_files $uri $uri/ =404;
     }

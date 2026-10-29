@@ -2,11 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { profile } from '../data/site';
+import { personJsonLd } from '../utils/seo';
 ---
 
 <BaseLayout
   title={`About — ${profile.handle}`}
   description="四川大学计算机科学与技术。关注 Java 后端、AI Agent 与长期记忆系统，以可核验的工程实践持续学习。"
+  jsonLd={personJsonLd(Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined)}
 >
   <div class="container">
     <header class="page-hero">

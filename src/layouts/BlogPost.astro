@@ -7,6 +7,7 @@ import FormattedDate from '../components/FormattedDate.astro';
 import Icon from '../components/Icon.astro';
 import { profile, topics } from '../data/site';
 import { type Post, readingTime, postUrl } from '../utils/posts';
+import { articleJsonLd } from '../utils/seo';
 import '../styles/article.css';
 interface Props {
   post: Post;
@@ -28,6 +29,16 @@ const {
   heroCaption,
 } = post.data;
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const jsonLd = example
+  ? undefined
+  : articleJsonLd({
+      title,
+      description,
+      url: Astro.site ? new URL(postUrl(post), Astro.site).href : undefined,
+      published: pubDate,
+      updated: updatedDate,
+      image: Astro.site ? new URL('/og-image.png', Astro.site).href : undefined,
+    });
 ---
 
 <BaseLayout
@@ -35,6 +46,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
   description={description}
   noindex={example}
   article
+  jsonLd={jsonLd}
 >
   <div class="container reader-container">
     <nav class="breadcrumb" aria-label="面包屑">

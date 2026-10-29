@@ -6,12 +6,14 @@ interface Props {
   description?: string;
   noindex?: boolean;
   article?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 const {
   title = site.title,
   description = site.description,
   noindex = false,
   article = false,
+  jsonLd,
 } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
 const image = Astro.site ? new URL('/og-image.png', Astro.site) : undefined;
@@ -54,6 +56,13 @@ const image = Astro.site ? new URL('/og-image.png', Astro.site) : undefined;
   <meta property="og:image:alt" content="adfkj2 — Reliable systems. Intelligent possibilities." />
 )}
 <meta name="twitter:card" content="summary_large_image" />
+{jsonLd && (
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')}
+  />
+)}
 <script is:inline>
   (() => {
     let theme = 'dark';

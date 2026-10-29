@@ -19,8 +19,12 @@ export default defineConfig({
     ...(site
       ? [
           sitemap({
+            // 分类页在还没有正式文章时会被索引成空页面；发布文章后移除 /writing/tags/ 过滤。
             filter: (url) =>
-              !url.includes('/examples/') && !url.includes('/404') && !url.includes('/blog/'),
+              !url.includes('/examples/') &&
+              !url.includes('/404') &&
+              !url.includes('/blog/') &&
+              !url.includes('/writing/tags/'),
           }),
         ]
       : []),

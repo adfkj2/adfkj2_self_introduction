@@ -1,3 +1,32 @@
 ---
-return Astro.redirect('/writing/');
+import { profile } from '../../data/site';
+import '../../styles/global.css';
+/** 文章列表已迁移到 /writing/：这里只保留跳转，并显式声明不参与索引。 */
+const canonical = Astro.site ? new URL('/writing/', Astro.site) : undefined;
 ---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#111418" />
+    <meta name="robots" content="noindex, follow" />
+    <meta http-equiv="refresh" content="0; url=/writing/" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <title>Writing — {profile.handle}</title>
+  </head>
+  <body>
+    <main class="container section">
+      <h1>页面已迁移</h1>
+      <p>
+        文章列表现在位于{' '}
+        <a class="text-link" href="/writing/">
+          Writing
+        </a>
+        。
+      </p>
+    </main>
+  </body>
+</html>
