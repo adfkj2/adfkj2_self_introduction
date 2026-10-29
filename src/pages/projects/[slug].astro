@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectArt from '../../components/ProjectArt.astro';
+import ProjectShots from '../../components/ProjectShots.astro';
 import Icon from '../../components/Icon.astro';
 import { projects, type Project } from '../../data/projects';
 import { profile } from '../../data/site';
@@ -56,6 +57,7 @@ const { project: p, next } = Astro.props;
         <span>{p.focus}</span>
       </div>
     </div>
+    <ProjectShots shots={p.shots} name={p.name} />
     <div class="detail-grid">
       <aside class="detail-aside">
         <div class="eyebrow">ON THIS PROJECT</div>

@@ -6,6 +6,12 @@ export interface ProjectSection {
   bullets?: string[];
   note?: string;
 }
+/** 真实界面截图：放在 public/shots/ 下，caption 说明画面内容与脱敏处理。 */
+export interface ProjectShot {
+  src: string;
+  alt: string;
+  caption?: string;
+}
 export interface Project {
   slug: 'dive' | 'medical' | 'tickets' | 'better-one';
   name: string;
@@ -21,6 +27,7 @@ export interface Project {
   architecture: string[];
   sections: ProjectSection[];
   sourceNote: string;
+  shots?: ProjectShot[];
 }
 export const projects: Project[] = [
   {

@@ -64,10 +64,10 @@ import { profile } from '../data/site';
             </div>
           ))}
         </div>
-        <section class="resume-panel" id="resume">
-          <Icon name="file" size={32} />
+        <section class="resume-panel" id="contact">
+          <Icon name="mail" size={32} />
           <div>
-            <h3>Resume / 简历</h3>
+            <h3>{profile.resume ? 'Resume / 简历' : 'Contact / 联系'}</h3>
             {profile.resume ? (
               <a class="text-link" href={profile.resume} target="_blank" rel="noopener noreferrer">
                 查看简历 PDF
@@ -75,8 +75,11 @@ import { profile } from '../data/site';
               </a>
             ) : (
               <>
-                <p>简历 PDF 尚未公开。欢迎先查看项目的源码、架构与工程记录。</p>
-                <span class="resume-label">NOT PUBLISHED YET</span>
+                <p>想了解项目细节、技术取舍，或聊聊实习与校招机会，直接写信给我。</p>
+                <a class="text-link" href={`mailto:${profile.email}`}>
+                  {profile.email}
+                  <Icon name="mail" size={15} />
+                </a>
                 <br />
                 <a class="text-link" href="/projects/">
                   查看项目经历

@@ -6,7 +6,7 @@ import ProjectCard from '../components/ProjectCard.astro';
 import WritingEmpty from '../components/WritingEmpty.astro';
 import PostList from '../components/PostList.astro';
 import { projects } from '../data/projects';
-import { profile, topics } from '../data/site';
+import { availability, profile, topics } from '../data/site';
 import { getPublishedPosts } from '../utils/posts';
 const posts = (await getPublishedPosts()).slice(0, 4);
 const focusLinks = [
@@ -56,6 +56,16 @@ const focusLinks = [
       <div class="hero-visual">
         <MemoryAtlas />
       </div>
+    </div>
+    <div class="status-strip" aria-label="当前状态">
+      {availability.map((item) => (
+        <p>
+          <span class="status-label" translate="no">
+            {item.label}
+          </span>
+          <span>{item.value}</span>
+        </p>
+      ))}
     </div>
     <div class="tech-strip">
       <p>技术方向</p>

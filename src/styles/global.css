@@ -487,6 +487,28 @@ summary:focus-visible,
 .hero-visual {
   min-width: 0;
 }
+.status-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 34px;
+  padding-bottom: 22px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.status-strip p {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 9px;
+  line-height: 1.7;
+}
+.status-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
 .tech-strip {
   border-block: 1px solid var(--line);
   display: flex;
@@ -995,6 +1017,11 @@ summary:focus-visible,
 .journal-empty .text-link {
   margin-top: 20px;
   color: var(--accent);
+}
+.journal-empty-action .text-link {
+  display: flex;
+  width: fit-content;
+  margin-top: 16px;
 }
 .example-marker {
   font-size: 10px;
@@ -1544,12 +1571,6 @@ summary:focus-visible,
   line-height: 1.95;
   margin-top: 11px;
 }
-.resume-label {
-  display: inline-block;
-  font-size: 11px;
-  color: var(--faint);
-  margin-top: 14px;
-}
 @media (max-width: 1100px) {
   .container {
     width: calc(100% - 64px);
@@ -1983,6 +2004,11 @@ summary:focus-visible,
   .hero-role {
     font-size: 11px;
     margin-block: 13px 23px;
+  }
+  .status-strip {
+    gap: 6px 20px;
+    padding-bottom: 18px;
+    font-size: 12px;
   }
   .hero h1 {
     font-size: clamp(31px, 8.55vw, 45px);

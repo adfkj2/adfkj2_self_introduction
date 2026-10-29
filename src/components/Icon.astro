@@ -13,6 +13,7 @@ interface Props {
     | 'nodes'
     | 'terminal'
     | 'rss'
+    | 'mail'
     | 'file';
   size?: number;
   class?: string;
@@ -33,6 +34,7 @@ const paths = {
   nodes: 'M12 7V3M7 15l-4 4m14-4 4 4M16 11a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM9 3h6M1 19l3 3m16 0 3-3',
   terminal: 'm6 7 4 4-4 4m7 0h5M3 3h18v18H3Z',
   rss: 'M4 4a16 16 0 0 1 16 16M4 10a10 10 0 0 1 10 10M5 19h.01',
+  mail: 'M3 5h18v14H3Zm0 1 9 7 9-7',
   file: 'M14 2H5v20h14V7Zm0 0v5h5M8 12h8M8 16h6',
 };
 ---

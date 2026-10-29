@@ -16,6 +16,12 @@ export const site = {
   title: `${profile.handle} — Systems, memory & everything between.`,
   description: 'Java 后端与 AI Agent 开发者,记录可靠系统、长期记忆与检索增强生成的工程实践',
 };
+/** 首页状态条：只写可核实的信息，改这里即可更新展示。 */
+export const availability = [
+  { label: 'Now', value: '在读 · 四川大学 计算机科学与技术' },
+  { label: 'Focus', value: 'Java 后端 & AI Agent' },
+  { label: 'Open', value: '开放实习与校招交流' },
+];
 export const navigation = [
   { label: 'Home', href: '/' },
   { label: 'Projects', href: '/projects/' },
