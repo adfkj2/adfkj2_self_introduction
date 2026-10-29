@@ -62,6 +62,16 @@ const isActive = (href: string) =>
         <Icon name="arrow" size={18} />
       </a>
     ))}
+    <a class="mobile-nav-contact" href={profile.github} target="_blank" rel="noopener noreferrer">
+      GitHub
+      <Icon name="github" size={18} />
+    </a>
+    {profile.email && (
+      <a class="mobile-nav-contact" href={`mailto:${profile.email}`}>
+        {profile.email}
+        <Icon name="mail" size={18} />
+      </a>
+    )}
   </nav>
 </header>
 <script>

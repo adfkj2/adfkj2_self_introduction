@@ -5,20 +5,43 @@
 <div class="noise-overlay" aria-hidden="true"></div>
 
 <script>
-  import { animate } from 'animejs';
+  type AnimeAnimation = {
+    complete: () => void;
+    pause: () => void;
+    resume: () => void;
+    revert: () => void;
+  };
+  type AnimateFn = (target: unknown, params: Record<string, unknown>) => AnimeAnimation;
 
   const root = document.documentElement;
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
   const controls = document.querySelectorAll<HTMLButtonElement>('[data-motion-toggle]');
-  const running = new Set<ReturnType<typeof animate>>();
+  const running = new Set<AnimeAnimation>();
   let paused = false;
+  let animate: AnimateFn | undefined;
+  let loading: Promise<AnimateFn | undefined> | undefined;
+  let ready = false;
   try {
     paused = localStorage.getItem('portfolio-motion-paused') === 'true';
   } catch {
     // Motion controls also work when storage is unavailable.
   }
-  const motionEnabled = () => !paused && !reducedMotion.matches;
+  const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
+    ?.saveData;
+  const motionEnabled = () => !paused && !reducedMotion.matches && !saveData;
+
+  // animejs 只服务于装饰性动效，放到首帧之后再下载，压缩首屏关键路径。
+  const loadAnime = () => {
+    loading ??= import('animejs')
+      .then((module) => {
+        animate = module.animate as unknown as AnimateFn;
+        return animate;
+      })
+      .catch(() => undefined);
+    return loading;
+  };
+
   const finishAnimations = () => {
     for (const animation of [...running]) animation.complete();
     document.querySelectorAll<HTMLElement>('.magnetic').forEach((button) => {
@@ -29,6 +52,7 @@
     root.dataset.motionReady = 'true';
     root.dataset.motionPaused = String(paused || reducedMotion.matches);
     if (!motionEnabled()) finishAnimations();
+    else void ensureSetup();
     controls.forEach((button) => {
       button.hidden = reducedMotion.matches;
       button.setAttribute('aria-pressed', String(paused));
@@ -47,87 +71,107 @@
     });
   });
   reducedMotion.addEventListener('change', updateMotion);
-  updateMotion();
 
-  // Animate on entry without installing a hidden state that could strand content.
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          observer.unobserve(entry.target);
-          if (!motionEnabled()) continue;
-          const element = entry.target as HTMLElement;
-          const animation = animate(element, {
-            opacity: [0.65, 1],
-            translateY: [18, 0],
-            duration: 650,
-            delay: Math.min(Number(element.dataset.revealDelay) || 0, 240),
+  const setupAnimations = (animateFn: AnimateFn) => {
+    // Animate on entry without installing a hidden state that could strand content.
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            observer.unobserve(entry.target);
+            if (!motionEnabled()) continue;
+            const element = entry.target as HTMLElement;
+            const animation = animateFn(element, {
+              opacity: [0.65, 1],
+              translateY: [18, 0],
+              duration: 650,
+              delay: Math.min(Number(element.dataset.revealDelay) || 0, 240),
+              ease: 'outCubic',
+              onComplete: () => {
+                running.delete(animation);
+                animation.revert();
+              },
+            });
+            running.add(animation);
+          }
+        },
+        { threshold: 0.06 },
+      );
+      document.querySelectorAll('[data-reveal]').forEach((element) => {
+        // 已经在首屏里的内容不再补动效，避免脚本迟到时出现跳动。
+        if (element.getBoundingClientRect().top < window.innerHeight * 0.9) return;
+        observer.observe(element);
+      });
+    }
+
+    if (finePointer.matches) {
+      document
+        .querySelectorAll<HTMLElement>('.case-dive, .journal-compact, .profile-panel')
+        .forEach((card) => {
+          card.addEventListener('pointermove', (event) => {
+            if (!motionEnabled()) return;
+            const rect = card.getBoundingClientRect();
+            card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+            card.style.setProperty('--my', `${event.clientY - rect.top}px`);
+          });
+        });
+
+      document.querySelectorAll<HTMLElement>('.magnetic').forEach((button) => {
+        let reset: AnimeAnimation | undefined;
+        const cancelReset = () => {
+          if (!reset) return;
+          reset.revert();
+          running.delete(reset);
+          reset = undefined;
+        };
+        button.addEventListener('pointermove', (event) => {
+          if (!motionEnabled()) return;
+          cancelReset();
+          const rect = button.getBoundingClientRect();
+          const x = event.clientX - rect.left - rect.width / 2;
+          const y = event.clientY - rect.top - rect.height / 2;
+          button.style.transform = `translate(${x * 0.1}px, ${y * 0.14}px)`;
+        });
+        button.addEventListener('pointerleave', () => {
+          cancelReset();
+          if (!motionEnabled()) return;
+          const animation = animateFn(button, {
+            translateX: 0,
+            translateY: 0,
+            duration: 450,
             ease: 'outCubic',
             onComplete: () => {
-              running.delete(animation);
               animation.revert();
+              running.delete(animation);
+              button.style.removeProperty('transform');
+              reset = undefined;
             },
           });
+          reset = animation;
           running.add(animation);
-        }
-      },
-      { threshold: 0.06 },
-    );
-    document.querySelectorAll('[data-reveal]').forEach((element) => observer.observe(element));
+        });
+        button.addEventListener('focus', () => {
+          cancelReset();
+          button.style.removeProperty('transform');
+        });
+      });
+    }
+  };
+
+  async function ensureSetup() {
+    if (ready || !motionEnabled()) return;
+    const animateFn = await loadAnime();
+    if (!animateFn || ready) return;
+    ready = true;
+    setupAnimations(animateFn);
   }
 
-  if (finePointer.matches) {
-    document
-      .querySelectorAll<HTMLElement>('.case-dive, .journal-compact, .profile-panel')
-      .forEach((card) => {
-        card.addEventListener('pointermove', (event) => {
-          if (!motionEnabled()) return;
-          const rect = card.getBoundingClientRect();
-          card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
-          card.style.setProperty('--my', `${event.clientY - rect.top}px`);
-        });
-      });
-
-    document.querySelectorAll<HTMLElement>('.magnetic').forEach((button) => {
-      let reset: ReturnType<typeof animate> | undefined;
-      const cancelReset = () => {
-        if (!reset) return;
-        reset.revert();
-        running.delete(reset);
-        reset = undefined;
-      };
-      button.addEventListener('pointermove', (event) => {
-        if (!motionEnabled()) return;
-        cancelReset();
-        const rect = button.getBoundingClientRect();
-        const x = event.clientX - rect.left - rect.width / 2;
-        const y = event.clientY - rect.top - rect.height / 2;
-        button.style.transform = `translate(${x * 0.1}px, ${y * 0.14}px)`;
-      });
-      button.addEventListener('pointerleave', () => {
-        cancelReset();
-        if (!motionEnabled()) return;
-        const animation = animate(button, {
-          translateX: 0,
-          translateY: 0,
-          duration: 450,
-          ease: 'outCubic',
-          onComplete: () => {
-            running.delete(animation);
-            animation.revert();
-            button.style.removeProperty('transform');
-            reset = undefined;
-          },
-        });
-        reset = animation;
-        running.add(animation);
-      });
-      button.addEventListener('focus', () => {
-        cancelReset();
-        button.style.removeProperty('transform');
-      });
-    });
+  updateMotion();
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(() => void ensureSetup(), { timeout: 2000 });
+  } else {
+    setTimeout(() => void ensureSetup(), 1200);
   }
 
   const updateVisibility = () => {
