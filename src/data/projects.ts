@@ -249,6 +249,18 @@ export const projects: Project[] = [
       { label: '范围', value: '工单全流程、知识库、三角色权限与只读 AI 助手' },
       { label: '证据', value: 'README 声明 68 个自动化用例；本站未重新执行' },
     ],
+    shots: [
+      {
+        src: '/shots/isd-workbench.webp',
+        alt: '智能服务台工作台：四张状态统计卡与最近工单列表，左侧是工作台、工单池、知识库、用户管理菜单。',
+        caption: '工作台：待接单、处理中、已解决、已关闭的统计与最近工单，菜单按角色裁剪。',
+      },
+      {
+        src: '/shots/isd-ai-assistant.webp',
+        alt: '右下角 AI 助手抽屉：回答「我的工单处理到哪了？」，列出当前用户处理中与已关闭的工单。',
+        caption: 'AI 助手：只读取当前登录用户的数据，回答里带工单号与状态，不执行任何写操作。',
+      },
+    ],
     category: 'backend',
     status: '持续迭代',
     compact: true,
