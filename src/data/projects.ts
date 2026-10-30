@@ -240,14 +240,23 @@ export const projects: Project[] = [
   {
     slug: 'tickets',
     name: 'Intelligent Service Desk',
-    subtitle: 'Enterprise IT Service Desk · Spring Boot + Spring AI',
-    description: '把报障、接单、指派、知识沉淀与只读 AI 助手，收进同一条可追溯的业务链路。',
-    focus: '模块化单体 · 状态机 · 只读 AI 工具',
+    subtitle: 'Enterprise IT Service Desk · v1.0',
+    description:
+      '从报障到关单，再到知识沉淀与只读 AI 助手：一条可追溯、可限流、可压测的企业内网服务台。',
+    focus: '幂等与并发 · RAG 召回 · 可观测性',
     summary: [
-      { label: '角色', value: '独立完成后端与管理台' },
-      { label: '技术栈', value: 'Java 21 · Spring Boot 3.5 · Spring AI · MyBatis · MySQL · Vue 3' },
-      { label: '范围', value: '工单全流程、知识库、三角色权限与只读 AI 助手' },
-      { label: '证据', value: 'README 声明 68 个自动化用例；本站未重新执行' },
+      { label: '角色', value: '独立完成后端、管理台与部署编排' },
+      {
+        label: '技术栈',
+        value:
+          'Java 21 · Spring Boot 3.5 · Spring Session/Redis · MyBatis · MySQL · Spring AI · Vue 3',
+      },
+      { label: '范围', value: '工单、知识库、站内信、三角色权限与只读 AI 助手' },
+      {
+        label: '证据',
+        value:
+          '105 个后端用例 · 25 个前端单测 · JaCoCo 行覆盖 92.01% · E2E 与 k6 冒烟；本站未重新执行',
+      },
     ],
     shots: [
       {
@@ -262,19 +271,19 @@ export const projects: Project[] = [
       },
     ],
     category: 'backend',
-    status: '持续迭代',
+    status: 'v1.0 已发布',
     compact: true,
-    tags: ['Java 21', 'Spring Boot', 'Spring AI', 'MyBatis', 'MySQL', 'Vue 3'],
+    tags: ['Java 21', 'Spring Boot 3.5', 'Spring AI', 'MyBatis', 'MySQL', 'Redis', 'Vue 3'],
     github: 'https://github.com/adfkj2/intelligent-service-desk',
     architecture: [
-      'Session / RBAC',
+      'Session + Redis',
       'Ticket State Machine',
-      'Knowledge Base',
-      'Read-only AI Tools',
+      'FULLTEXT RAG',
+      'Outbox Notifications',
       'MySQL + Flyway',
     ],
     sourceNote:
-      '依据公开仓库 README 整理。模块能力与用例数量取自文档声明；本站没有重新运行测试或部署实例，响应时间、吞吐量与容量均未验证。',
+      '依据公开仓库 v1.0.0 README 整理。用例、覆盖率与压测数字取自仓库「关键数字」表与 perf-report；本站没有重新执行测试或压测，本机实测结果不等于生产容量。',
     sections: [
       {
         id: 'problem',
@@ -282,7 +291,7 @@ export const projects: Project[] = [
         title: '报障散落在私聊里，处理过程就无从追溯。',
         paragraphs: [
           '企业内网的 IT 支持常常从一句私聊开始：谁报的障、谁在处理、卡在哪一步，最后只留在对话记录里；同样的答案也要靠人反复口头传递。',
-          'Intelligent Service Desk 把这条链路做成系统：员工提交工单，技术支持接单，管理员指派与管人，状态流转留下操作历史。AI 助手只基于当前登录用户自己的数据回答，不执行任何写操作。',
+          'Intelligent Service Desk 把这条链路做成系统：员工提交工单，技术支持接单，管理员指派与管人，状态流转留下操作历史；接单、指派与状态变更还会通过站内信通知相关人。AI 助手只基于当前登录用户自己的数据回答，不执行任何写操作。',
         ],
       },
       {
@@ -290,12 +299,13 @@ export const projects: Project[] = [
         label: 'APPROACH',
         title: '一套页面，三种角色，一条完整链路。',
         paragraphs: [
-          'README 把能力划为五块：认证与权限、工单、知识库、AI 助手与管理台。前端是 Vue 3 + Vite 的 SPA，构建产物打进同一个 jar，部署形态仍是单体。',
+          'v1.0 把能力划为六块：认证与权限、工单、知识库、AI 助手、站内信与管理台。前端是 Vue 3 + Vite 的 SPA，构建产物打进同一个 jar，部署形态仍是模块化单体。',
         ],
         bullets: [
-          '员工提交工单并只看得到自己的数据；技术支持接单、维护自己创建的知识条目；管理员指派工单、调整角色、重置密码。',
-          '前端按角色裁剪菜单与按钮，但数据范围由后端 Service 的 requireVisible / requireRole 决定：隐藏按钮不等于权限。',
-          'AI 助手是任意页面右下角的抽屉，暴露两个只读工具——查当前用户工单、检索知识库，身份从 SecurityContext 取。',
+          '员工只看到自己的工单；技术支持接单、维护自己创建的知识条目；管理员指派工单、调整角色、重置密码。',
+          '前端按角色裁剪菜单与按钮，数据范围由后端 requireVisible / requireRole 决定：隐藏按钮不等于权限。',
+          'AI 助手是右下角的抽屉，两个只读工具（查当前用户工单、检索知识库）加全文召回；身份取自 SecurityContext，每次问答落审计表。',
+          '站内信由 Transactional Outbox 投递：事件与业务同事务落库，调度器异步派发，多实例靠唯一索引幂等。',
         ],
       },
       {
@@ -303,8 +313,9 @@ export const projects: Project[] = [
         label: 'ARCHITECTURE',
         title: '模块化单体，按业务分包。',
         paragraphs: [
-          'com.isd 下按 auth、ticket、kb、ai 四个业务模块分包，公共能力收在 common/：过滤器链、业务指标、统一响应与全局异常、SPA 路由回退。Controller 只做路由与参数校验，Service 承担业务规则、事务边界、状态机与权限，Mapper 只写 SQL。',
-          'web/ 是独立的 npm 工程，npm run build 把产物输出到 src/main/resources/static，再与 Spring Boot 一起打成一个 jar。开发期由 Vite 把 /api 代理到 8081，浏览器只看到一个源，Session Cookie 天然同源。',
+          'com.isd 下按 auth、ticket、kb、ai 分包，公共能力收在 common/：过滤器链、业务指标、统一响应与全局异常、SPA 路由回退。Controller 只做路由与参数校验，Service 承担业务规则、事务边界、状态机与权限，Mapper 只写 SQL。',
+          '会话从进程内存搬到 Spring Session + Redis，多实例下踢人才成立；6 个 Flyway 迁移、8 张业务表在启动时自动升级。前端仍是独立 npm 工程，产物回灌 static 后与后端一起打成 jar。',
+          '部署提供三种形态：本机开发（只起 Redis 容器）、全栈 compose，以及 Nginx + TLS 反代的 prod compose（app 不再映射宿主机端口）。',
         ],
       },
       {
@@ -312,53 +323,55 @@ export const projects: Project[] = [
         label: 'ENGINEERING DECISIONS',
         title: '每个取舍都写下了不做的理由。',
         bullets: [
-          '认证用 Session 而非 JWT：单体没有多端诉求，注销即失效，还能在服务端踢人，不必自己实现吊销。',
-          '持久层用 MyBatis 而非 JPA：手写 SQL 能直接利用索引并查看执行计划。',
-          '状态机用枚举 + 迁移白名单：四个状态不值得引框架，规则集中且可穷举测试。',
-          '接单用乐观锁 version：短事务、冲突可重试，比悲观锁划算。',
-          'AI 工具签名不带 userId：身份从 SecurityContext 取，从源头堵死提示注入越权。',
-          'history 路由配后端 7 条显式白名单转发，不用 /** 通配，以免吞掉 /api。',
+          '会话用 Spring Session + Redis（indexed 仓库）：内存里的 SessionRegistry 只能踢本机会话，多实例下踢人不成立。',
+          '创建工单用 Idempotency-Key + 唯一索引：先查后插在并发下仍会双写，唯一索引才是最终裁判。',
+          '检索保留两条路径：列表页 LIKE，RAG 走 FULLTEXT ngram；全文检索查不出单字符，直接替换会让现有搜索退化。',
+          '通知用 Transactional Outbox 而不是引 MQ：事件与业务同事务落库，靠唯一索引幂等，不增加运维面。',
+          'AI 工具签名不带 userId：身份从 SecurityContext 取，从根上堵死提示注入越权；召回内容拼进 user 消息，不污染 system 约束。',
+          'AI 成本护栏用 Redis 固定窗口：用户 20/min、IP 60/min，边界误差换实现与排查的简单。',
         ],
       },
       {
         id: 'implementation',
         label: 'IMPLEMENTATION',
-        title: '并发、权限与可观测性，都在实现层面兜住。',
+        title: '并发、幂等与可观测性，都在实现层面兜住。',
         paragraphs: [
           '接单冲突由 version 条件更新处理：两个线程同时接单恰好一个成功、version 只加 1。管理端还要防两个管理员互相降权导致零管理员，用按 id 排序的跨行锁兜底，后到的一方收到 409。',
-          '密码重置走一次性临时密码：明文只在响应里出现一次，对方已有会话立即失效；未改密前 /api/** 只放行改密、me 与 logout。',
-          '指标端点单独开在 8082 且只绑 127.0.0.1，8081 完全不暴露 actuator。日志全带 traceId，AI 调用跑在 ai-call-* 线程池，由 TaskDecorator 把 MDC 与 SecurityContext 一并带过去。',
+          '同 key 重复提交只落一条工单；站内信投递靠 (event_id, user_id) 唯一索引幂等，重试到上限转 FAILED。登录失败按账号 5 次、IP 20 次锁定 15 分钟；AI 超配额返回 429 并带剩余秒数。',
+          '指标端点单独开在 8082 且只绑 127.0.0.1：除冲突与状态流转，还统计幂等重放、RAG 召回命中与会话 started/ended（在线数在 Prometheus 侧算差值）。日志全带 traceId，AI 调用跑在 ai-call-* 线程池，由 TaskDecorator 把 MDC 与 SecurityContext 一并带过去。',
+          '生产 profile 关闭 Swagger、按 CspPolicy 下发 CSP（script-src 仅 self，不含 unsafe-eval），CSRF 用 Cookie 双提交。',
         ],
       },
       {
         id: 'experiments',
         label: 'VALIDATION',
-        title: '68 个自动化用例，并发场景单独验证。',
+        title: '105 个后端用例，门禁写进 CI。',
         paragraphs: [
-          'mvn test 覆盖工单创建与状态流转、越权 403/404、角色并发修改、密码重置与强制改密、指标计数、Flyway 迁移与 AI 降级，README 声明合计 68 个用例。',
-          '并发用例刻意不加 @Transactional：事务是连接级的，两个线程各自提交才能测出真实冲突。测试库优先起 MySQL 容器，本机没有 Docker 时回退本机实例。',
+          '后端 ./mvnw verify 覆盖状态机、并发接单、幂等提交、登录限流、越权 403/404、通知与审计清理、Redis 会话、CSRF 与安全响应头，共 105 个用例；JaCoCo 行覆盖 92.01%，门禁要求 ≥ 90%。',
+          '前端 25 个 Vitest 单测加 1 条 Playwright 主流程（登录→建单→接单→解决→关闭，同时断言 CSP 无违规）；k6 压工单读路径与 AI 配额，阈值写死在脚本里：列表 p95 < 300ms、详情 p95 < 200ms、AI 5xx 为 0。',
+          'CI 五个 job 都是硬门禁：后端 verify 与用例数比对、前端 lint/test/audit/build、镜像构建、E2E、压测冒烟。',
         ],
-        note: '以上数字来自仓库 README 与用例清单，本站未重新执行测试。响应时间、吞吐量与线上容量没有可复核的测量结果，因此不在此声明。',
+        note: '数字取自仓库「关键数字」表与 perf-report，本站未重新执行测试或压测。压测是本机环境结果，不代表生产容量与并发 SLA。',
       },
       {
         id: 'limitations',
         label: 'KNOWN LIMITATIONS',
         title: '已知短板写在 README 里，也留在这里。',
         bullets: [
-          "检索用 LIKE '%kw%'，前缀通配符用不上索引；v2 计划换 FULLTEXT ngram。",
-          '知识库分类不支持改与删，条目为硬删除，删除后不可恢复。',
-          'AI 单轮无会话记忆；降级时用整句做关键词，长句命中率低。',
-          'AI 接口没有频率限制，生产必须加配额；CSRF 关闭，目前依赖 SameSite=Lax。',
-          '工单号仍是「日期 + 4 位随机数 + 重试」，未换雪花或序列；前端没有单元测试，靠后端用例与手工验收清单兜底。',
-          'Element Plus 全量引入，主包 gzip 约 410KB，内网场景可接受，按需引入留作优化项。',
+          "列表页检索仍是 LIKE '%kw%'，用不上索引；RAG 已换 FULLTEXT ngram，但没有语义召回，同义词与跨语言查不到。",
+          'AI 单轮无会话记忆，降级只返回标题；限流是固定窗口，窗口边界可能瞬时放行接近两倍配额。',
+          'CSRF 用 Cookie 双提交，token 必须可被 JS 读取，一旦出现 XSS 这层就失效；CSP 只在 prod 下发，style-src 保留 unsafe-inline。',
+          '会话强依赖 Redis：Redis 不可用时应用启动失败（刻意不做内存降级），每次请求多一次 Redis 往返。',
+          '幂等键只在同一用户 + 同一 key 下生效，没有服务端过期回收；工单号仍是日期 + 4 位随机数 + 重试。',
+          '前端页面级只有 1 条 E2E 主流程，视觉回归与边界态靠手工验收；Element Plus 全量引入，主包 gzip 约 410KB。',
         ],
       },
       {
         id: 'repository',
         label: 'REPOSITORY',
-        title: '从 README 与 ADR 开始复核。',
+        title: '从发布门禁与压测报告开始复核。',
         paragraphs: [
-          '仓库里除源码外还有架构取舍记录（ADR）、5 分钟演示脚本、面试问答速查与学习笔记。本页是工程导航，能力与数字请以对应版本的 README、测试与运行记录为准。',
+          '仓库除源码外还有 v1.0 发布门禁（十条 DoD，逐条命令与证据）、架构 ADR、k6 压测报告、演示脚本与学习笔记。本页是工程导航，能力、数字与结论请以对应版本的 README、测试与压测记录为准。',
         ],
       },
     ],
