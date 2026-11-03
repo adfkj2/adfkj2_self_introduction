@@ -74,6 +74,16 @@ const homeDoc = await readFile(join(root, 'index.html'), 'utf8');
 assert.match(homeDoc, /"@type":"Person"/);
 const projectDoc = await readFile(join(root, 'projects/tickets/index.html'), 'utf8');
 assert.match(projectDoc, /"@type":"BreadcrumbList"/);
+// 工单项目版本与关键数字必须与仓库「关键数字」表一致，避免回退到旧版本口径。
+assert.ok(projectDoc.includes('v1.1 已发布'), 'tickets 页缺少 v1.1 已发布状态');
+assert.ok(
+  projectDoc.includes('Enterprise IT Service Desk · v1.1'),
+  'tickets 页副标题未更新到 v1.1',
+);
+assert.ok(projectDoc.includes('207'), 'tickets 页缺少 207 个后端用例');
+assert.ok(projectDoc.includes('94.50%'), 'tickets 页缺少行覆盖 94.50%');
+assert.ok(!projectDoc.includes('105 个后端用例'), 'tickets 页残留 v1.0 的 105 个用例');
+assert.ok(!projectDoc.includes('92.01%'), 'tickets 页残留 v1.0 的行覆盖数字');
 const rss = await readFile(join(root, 'rss.xml'), 'utf8');
 assert.ok(!rss.includes('reading-experience'), 'Example leaked into RSS');
 const home = await readFile(join(root, 'index.html'), 'utf8');
